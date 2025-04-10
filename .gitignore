@@ -1,0 +1,5 @@
+*cache*
+.venv
+nohup.out
+uv.lock
+.python-version

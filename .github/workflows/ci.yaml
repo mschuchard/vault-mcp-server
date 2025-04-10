@@ -1,0 +1,24 @@
+---
+name: test
+
+on:
+  push:
+    branches: [master]
+    paths:
+    - '**.py'
+  pull_request:
+    branches: [master]
+    paths:
+    - '**.py'
+
+jobs:
+  ci:
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    runs-on: ubuntu-latest
+    container: matthewschuchard/ansible-module
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: ruff
+      run: ruff check .

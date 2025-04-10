@@ -1,0 +1,21 @@
+---
+version: 2.1
+
+jobs:
+  test:
+    environment:
+      PYTHONPATH: /tmp/project
+    working_directory: /tmp/project
+    docker:
+    - image: matthewschuchard/ansible-module
+    resource_class: small
+    steps:
+    - checkout
+    - run:
+        name: ruff
+        command: ruff check .
+
+workflows:
+  execute_tests:
+    jobs:
+    - test
