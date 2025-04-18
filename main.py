@@ -1,6 +1,30 @@
-from mcp.server.fastmcp import FastMCP
-from vault import client
+from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
+from dataclasses import dataclass
 import json
+
+from mcp.server.fastmcp import FastMCP
+import hvac
+
+from vault import client
+
+
+@dataclass
+class VaultContext:
+    client: hvac.Client
+
+
+@asynccontextmanager
+async def vault_lifespan(server: FastMCP) -> AsyncIterator[VaultContext]:
+    """Manage vault client lifecycle with type-safe context"""
+    # Initialize on startup
+    vault_client: hvac.Client = await client.client()
+    yield VaultContext(client=vault_client)
+
+
+# documentation claims this works, but it actually does not
+# if nothing else it appears that the server arg conflicts
+# mcp = FastMCP('Vault', lifespan=vault_lifespan)
 
 mcp = FastMCP('Vault')
 
