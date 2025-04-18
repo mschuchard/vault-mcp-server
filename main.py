@@ -1,32 +1,23 @@
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
-from dataclasses import dataclass
 import json
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import Context, FastMCP
 import hvac
 
 from vault import client
 
 
-@dataclass
-class VaultContext:
-    client: hvac.Client
-
-
 @asynccontextmanager
-async def vault_lifespan(server: FastMCP) -> AsyncIterator[VaultContext]:
-    """Manage vault client lifecycle with type-safe context"""
-    # Initialize on startup
-    vault_client: hvac.Client = await client.client()
-    yield VaultContext(client=vault_client)
+async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
+    """Manage mcp server lifecycle with type-safe context"""
+    # Initialize resources on startup
+    vault_client: hvac.Client = client.client()
+    yield {'client': vault_client}
 
 
-# documentation claims this works, but it actually does not
-# if nothing else it appears that the server arg conflicts
-# mcp = FastMCP('Vault', lifespan=vault_lifespan)
-
-mcp = FastMCP('Vault')
+mcp = FastMCP('Vault', lifespan=server_lifespan)
+# ctx.request_context.lifespan_context['client']
 
 
 # resources
@@ -37,7 +28,7 @@ mcp = FastMCP('Vault')
     description='List the available enabled Vault authentication engines',
     mime_type='application/json',
 )
-def auth_engines() -> str:
+def auth_engines() -> json:
     """list the vault authentication engines"""
     return json.dumps(client.client().sys.list_auth_methods())
 
@@ -46,7 +37,7 @@ def auth_engines() -> str:
 @mcp.resource(
     uri='secret://engines', name='Enabled Secret Engines', description='List the available enabled Vault secret engines', mime_type='application/json'
 )
-def secret_engines() -> str:
+def secret_engines() -> json:
     """list the vault secret engines"""
     return json.dumps(client.client().sys.list_mounted_secrets_engines())
 
@@ -55,7 +46,7 @@ def secret_engines() -> str:
 @mcp.resource(
     uri='sys://policies', name='Configured ACL Policies', description='List the available configured Vault ACL policies', mime_type='application/json'
 )
-def acl_policies() -> str:
+def acl_policies() -> json:
     """list the vault acl policies"""
     return json.dumps(client.client().sys.list_acl_policies())
 
@@ -85,6 +76,13 @@ def auth_engine_disable(mount: str) -> bool:
         return False
 
 
+@mcp.tool(name='List Authentication Engines')
+async def auth_engine_list(ctx: Context) -> dict:
+    """list enabled authentication engines in vault: alpha"""
+    engines: json = await ctx.read_resource('auth://engines')
+    return engines['content']
+
+
 ## secret engines
 ### general
 @mcp.tool(name='Enable Secret Engine')
@@ -107,6 +105,13 @@ def secret_engine_disable(mount: str) -> bool:
         return True
     except Exception:
         return False
+
+
+@mcp.tool(name='List Secret Engines')
+async def secret_engine_list(ctx: Context) -> dict:
+    """list enabled secret engines in vault: alpha"""
+    engines: json = await ctx.read_resource('secret://engines')
+    return engines['content']
 
 
 ### kv2
@@ -171,6 +176,13 @@ def policy_delete(name: str) -> bool:
 def policy_read(name: str) -> dict:
     """read a acl policy from vault"""
     return client.client().sys.read_acl_policy(name=name)
+
+
+@mcp.tool(name='Policy List')
+async def policy_list(ctx: Context) -> dict:
+    """list acl policies in vault: alpha"""
+    policies: json = await ctx.read_resource('sys://policies')
+    return policies['content']
 
 
 if __name__ == '__main__':
