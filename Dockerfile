@@ -27,10 +27,11 @@ FROM python:3.12-slim-bookworm
 
 WORKDIR /app
  
-COPY --from=uv /root/.local /root/.local
+COPY --from=uv --chown=app:app /app/main.py /app/main.py
+COPY --from=uv --chown=app:app /app/vault /app/vault
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-ENTRYPOINT ["vault-mcp-server"]
+ENTRYPOINT ["python", "/app/main.py"]

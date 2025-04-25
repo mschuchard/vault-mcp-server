@@ -30,4 +30,8 @@ This can hopefully be extrapolated and modified to fit other clients if you want
 }
 ```
 
-Please note that the container image does not yet exist at the time of this writing, but you can also build it yourself using the `Dockerfile` in this repository.
+## Features
+- Enable/Disable Authentication Engine
+- Enable/Disable Secrets Engine
+- KV Version 2 Secrets Engine
+- ACL Policies
