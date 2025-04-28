@@ -77,10 +77,10 @@ def auth_engine_disable(ctx: Context, mount: str) -> bool:
 
 
 @mcp.tool(name='List Authentication Engines')
-async def auth_engine_list(ctx: Context) -> dict:
+async def auth_engine_list(ctx: Context) -> json:
     """list enabled authentication engines in vault: alpha"""
     engines: json = await ctx.read_resource('auth://engines')
-    return engines['content']
+    return json.dumps(engines['content'])
 
 
 ## secret engines
@@ -108,20 +108,22 @@ def secret_engine_disable(ctx: Context, mount: str) -> bool:
 
 
 @mcp.tool(name='List Secret Engines')
-async def secret_engine_list(ctx: Context) -> dict:
+async def secret_engine_list(ctx: Context) -> json:
     """list enabled secret engines in vault: alpha"""
     engines: json = await ctx.read_resource('secret://engines')
-    return engines['content']
+    return json.dumps(engines['content'])
 
 
 ### kv2
 @mcp.tool(name='KV2 Write')
-def kv2_write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> dict:
+def kv2_write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> json:
     """write a kv2 secret to vault"""
-    return ctx.request_context.lifespan_context['client'].secrets.kv.v2.create_or_update_secret(
-        mount_point=mount,
-        path=path,
-        secret=secret,
+    return json.dumps(
+        ctx.request_context.lifespan_context['client'].secrets.kv.v2.create_or_update_secret(
+            mount_point=mount,
+            path=path,
+            secret=secret,
+        )
     )
 
 
@@ -137,15 +139,15 @@ def kv2_delete(ctx: Context, mount: str = 'secret', path: str = '') -> bool:
 
 
 @mcp.tool(name='KV2 Read')
-def kv2_read(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
+def kv2_read(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """read a kv2 secret from a vault"""
-    return ctx.request_context.lifespan_context['client'].secrets.kv.read_secret_version(mount_point=mount, path=path)['data']
+    return json.dumps(ctx.request_context.lifespan_context['client'].secrets.kv.read_secret_version(mount_point=mount, path=path)['data'])
 
 
 @mcp.tool(name='KV2 List')
-def kv2_list(ctx: Context, mount: str = 'secret', path: str = '') -> list:
+def kv2_list(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """list the kv2 secrets in vault"""
-    return ctx.request_context.lifespan_context['client'].secrets.kv.v2.list_secrets(mount_point=mount, path=path)['data']['keys']
+    return json.dumps(ctx.request_context.lifespan_context['client'].secrets.kv.v2.list_secrets(mount_point=mount, path=path)['data']['keys'])
 
 
 ## policies
@@ -173,16 +175,16 @@ def policy_delete(ctx: Context, name: str) -> bool:
 
 
 @mcp.tool(name='Policy Read')
-def policy_read(ctx: Context, name: str) -> dict:
+def policy_read(ctx: Context, name: str) -> json:
     """read a acl policy from vault"""
-    return ctx.request_context.lifespan_context['client'].sys.read_acl_policy(name=name)
+    return json.dumps(ctx.request_context.lifespan_context['client'].sys.read_acl_policy(name=name))
 
 
 @mcp.tool(name='Policy List')
-async def policy_list(ctx: Context) -> dict:
+async def policy_list(ctx: Context) -> json:
     """list acl policies in vault: alpha"""
     policies: json = await ctx.read_resource('sys://policies')
-    return policies['content']
+    return json.dumps(policies['content'])
 
 
 if __name__ == '__main__':
