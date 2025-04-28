@@ -35,3 +35,4 @@ This can hopefully be extrapolated and modified to fit other clients if you want
 - Enable/Disable Secrets Engine
 - KV Version 2 Secrets Engine
 - ACL Policies
+- Audit Devices

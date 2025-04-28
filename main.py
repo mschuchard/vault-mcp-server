@@ -51,6 +51,13 @@ def acl_policies() -> json:
     return json.dumps(client.client().sys.list_acl_policies())
 
 
+## audit
+@mcp.resource(uri='audit://devices', name='Enabled Audit Devices', description='List the available enabled Vault audit devices', mime_type='application/json')
+def audit_devices() -> json:
+    """list the vault audit devices"""
+    return json.dumps(client.client().sys.list_enabled_audit_devices())
+
+
 # tools
 ## auth
 ### general
@@ -185,6 +192,27 @@ async def policy_list(ctx: Context) -> json:
     """list acl policies in vault: alpha"""
     policies: json = await ctx.read_resource('sys://policies')
     return json.dumps(policies['content'])
+
+
+## audit devices
+### general
+@mcp.tool(name='Enable Audit Device')
+def audit_device_enable(ctx: Context, type: str, path: str) -> json:
+    """enable a vault audit device"""
+    return ctx.request_context.lifespan_context['client'].sys.enable_audit_device(device_type=type, path=path).json()
+
+
+@mcp.tool(name='Disable Audit Device')
+def audit_device_disable(ctx: Context, path: str) -> json:
+    """disable a vault audit device"""
+    return ctx.request_context.lifespan_context['client'].sys.disable_audit_device(path=path).json()
+
+
+@mcp.tool(name='List Audit Devices')
+async def audit_Device_list(ctx: Context) -> json:
+    """list enabled audit devices in vault: alpha"""
+    devices: json = await ctx.read_resource('audit://devicees')
+    return json.dumps(devices['content'])
 
 
 if __name__ == '__main__':
