@@ -30,6 +30,8 @@ This can hopefully be extrapolated and modified to fit other clients if you want
 }
 ```
 
+Until this tool matures beyond an arbitrary point the above hosted Docker Hub registry container image will match the code hosted here at `HEAD`.
+
 ## Features
 - Enable/Disable Authentication Engine
 - Enable/Disable Secrets Engine

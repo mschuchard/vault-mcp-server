@@ -62,25 +62,15 @@ def audit_devices() -> json:
 ## auth
 ### general
 @mcp.tool(name='Enable Authentication Engine')
-def auth_engine_enable(ctx: Context, engine: str, mount: str = None) -> bool:
+def auth_engine_enable(ctx: Context, engine: str, mount: str = None) -> json:
     """enable a vault authentication engine"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.enable_auth_method(method_type=engine, path=mount)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.enable_auth_method(method_type=engine, path=mount).text
 
 
 @mcp.tool(name='Disable Authentication Engine')
-def auth_engine_disable(ctx: Context, mount: str) -> bool:
+def auth_engine_disable(ctx: Context, mount: str) -> json:
     """disable a vault auth engine"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.disable_auth_method(path=mount)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.disable_auth_method(path=mount).text
 
 
 @mcp.tool(name='List Authentication Engines')
@@ -93,25 +83,15 @@ async def auth_engine_list(ctx: Context) -> json:
 ## secret engines
 ### general
 @mcp.tool(name='Enable Secret Engine')
-def secret_engine_enable(ctx: Context, engine: str, mount: str = None) -> bool:
+def secret_engine_enable(ctx: Context, engine: str, mount: str = None) -> json:
     """enable a vault secret engine"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.enable_secrets_engine(backend_type=engine, path=mount)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.enable_secrets_engine(backend_type=engine, path=mount).text
 
 
 @mcp.tool(name='Disable Secret Engine')
-def secret_engine_disable(ctx: Context, mount: str) -> bool:
+def secret_engine_disable(ctx: Context, mount: str) -> json:
     """disable a vault secret engine"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.disable_secrets_engine(path=mount)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.disable_secrets_engine(path=mount).text
 
 
 @mcp.tool(name='List Secret Engines')
@@ -135,14 +115,9 @@ def kv2_write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict 
 
 
 @mcp.tool(name='KV2 Delete')
-def kv2_delete(ctx: Context, mount: str = 'secret', path: str = '') -> bool:
+def kv2_delete(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """delete a kv2 secret from vault"""
-    try:
-        ctx.request_context.lifespan_context['client'].secrets.kv.delete_metadata_and_all_versions(mount_point=mount, path=path)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].secrets.kv.delete_metadata_and_all_versions(mount_point=mount, path=path).text
 
 
 @mcp.tool(name='KV2 Read')
@@ -160,25 +135,15 @@ def kv2_list(ctx: Context, mount: str = 'secret', path: str = '') -> json:
 ## policies
 ### general
 @mcp.tool(name='Policy Write')
-def policy_write(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> bool:
+def policy_write(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> json:
     """write a acl policy to vault"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.create_or_update_acl_policy(name=name, policy=policy)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.create_or_update_acl_policy(name=name, policy=policy).text
 
 
 @mcp.tool(name='Policy Delete')
-def policy_delete(ctx: Context, name: str) -> bool:
+def policy_delete(ctx: Context, name: str) -> json:
     """delete a acl policy from vault"""
-    try:
-        ctx.request_context.lifespan_context['client'].sys.delete_acl_policy(name=name)
-
-        return True
-    except Exception:
-        return False
+    return ctx.request_context.lifespan_context['client'].sys.delete_acl_policy(name=name).text
 
 
 @mcp.tool(name='Policy Read')
@@ -199,13 +164,13 @@ async def policy_list(ctx: Context) -> json:
 @mcp.tool(name='Enable Audit Device')
 def audit_device_enable(ctx: Context, type: str, path: str) -> json:
     """enable a vault audit device"""
-    return ctx.request_context.lifespan_context['client'].sys.enable_audit_device(device_type=type, path=path).json()
+    return ctx.request_context.lifespan_context['client'].sys.enable_audit_device(device_type=type, path=path).text
 
 
 @mcp.tool(name='Disable Audit Device')
 def audit_device_disable(ctx: Context, path: str) -> json:
     """disable a vault audit device"""
-    return ctx.request_context.lifespan_context['client'].sys.disable_audit_device(path=path).json()
+    return ctx.request_context.lifespan_context['client'].sys.disable_audit_device(path=path).text
 
 
 @mcp.tool(name='List Audit Devices')
