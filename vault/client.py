@@ -1,7 +1,10 @@
 """vault client"""
 
 import os
+import json
+
 import hvac
+import hvac.exceptions
 
 
 def client() -> hvac.Client:
@@ -10,5 +13,14 @@ def client() -> hvac.Client:
     url: str = os.getenv('VAULT_URL', 'http://127.0.0.1:8200')
     token: str = os.getenv('VAULT_TOKEN', '')
 
+    # construct and validate client
+    client: hvac.Client = hvac.Client(url=url, token=token)
+
+    if not client.is_authenticated:
+        raise hvac.exceptions.Unauthorized('invalid authentication')
+
+    if json.loads(client.seal_status)['sealed']:
+        raise hvac.exceptions.VaultNotInitialized('vault server is sealed')
+
     # return authenticated client
-    return hvac.Client(url=url, token=token)
+    return client

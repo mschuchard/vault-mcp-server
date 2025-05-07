@@ -1,3 +1,5 @@
+"""mcp server for vault"""
+
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 import json
@@ -17,7 +19,6 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
 
 
 mcp = FastMCP('Vault', lifespan=server_lifespan)
-# ctx.request_context.lifespan_context['client']
 
 
 # resources
