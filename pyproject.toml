@@ -5,6 +5,6 @@ description = "MCP Server for Vault"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "hvac>=2.3.0",
-    "mcp[cli]>=1.6.0",
+    "hvac>=2.3.0, <3.0.0",
+    "mcp[cli]>=1.7.0, <2.0.0",
 ]

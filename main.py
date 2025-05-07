@@ -75,9 +75,9 @@ def auth_engine_disable(ctx: Context, mount: str) -> json:
 
 @mcp.tool(name='List Authentication Engines')
 async def auth_engine_list(ctx: Context) -> json:
-    """list enabled authentication engines in vault: alpha"""
+    """list enabled authentication engines in vault"""
     engines: json = await ctx.read_resource('auth://engines')
-    return json.dumps(engines['content'])
+    return json.dumps(engines[0].content)
 
 
 ## secret engines
@@ -96,9 +96,9 @@ def secret_engine_disable(ctx: Context, mount: str) -> json:
 
 @mcp.tool(name='List Secret Engines')
 async def secret_engine_list(ctx: Context) -> json:
-    """list enabled secret engines in vault: alpha"""
+    """list enabled secret engines in vault"""
     engines: json = await ctx.read_resource('secret://engines')
-    return json.dumps(engines['content'])
+    return json.dumps(engines[0].content)
 
 
 ### kv2
@@ -154,9 +154,9 @@ def policy_read(ctx: Context, name: str) -> json:
 
 @mcp.tool(name='Policy List')
 async def policy_list(ctx: Context) -> json:
-    """list acl policies in vault: alpha"""
+    """list acl policies in vault"""
     policies: json = await ctx.read_resource('sys://policies')
-    return json.dumps(policies['content'])
+    return json.dumps(policies[0].content)
 
 
 ## audit devices
@@ -175,9 +175,9 @@ def audit_device_disable(ctx: Context, path: str) -> json:
 
 @mcp.tool(name='List Audit Devices')
 async def audit_Device_list(ctx: Context) -> json:
-    """list enabled audit devices in vault: alpha"""
-    devices: json = await ctx.read_resource('audit://devicees')
-    return json.dumps(devices['content'])
+    """list enabled audit devices in vault"""
+    devices = await ctx.read_resource('audit://devices')
+    return json.dumps(devices[0].content)
 
 
 if __name__ == '__main__':
