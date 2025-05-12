@@ -14,11 +14,11 @@ from vault import client
 async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
     """Manage mcp server lifecycle with type-safe context"""
     # Initialize resources on startup
-    vault_client: hvac.Client = client.client()
-    yield {'client': vault_client}
+    vault_client: hvac.v1.Client = client.client()
+    yield {'client': vault_client, 'sys': vault_client.sys, 'kv2': vault_client.secrets.kv.v2}
 
 
-mcp = FastMCP('Vault', lifespan=server_lifespan)
+mcp: FastMCP = FastMCP('Vault', lifespan=server_lifespan)
 
 
 # resources
@@ -65,13 +65,13 @@ def audit_devices() -> json:
 @mcp.tool(name='Enable Authentication Engine')
 def auth_engine_enable(ctx: Context, engine: str, mount: str = None) -> json:
     """enable a vault authentication engine"""
-    return ctx.request_context.lifespan_context['client'].sys.enable_auth_method(method_type=engine, path=mount).text
+    return ctx.request_context.lifespan_context['sys'].enable_auth_method(method_type=engine, path=mount).text
 
 
 @mcp.tool(name='Disable Authentication Engine')
 def auth_engine_disable(ctx: Context, mount: str) -> json:
     """disable a vault auth engine"""
-    return ctx.request_context.lifespan_context['client'].sys.disable_auth_method(path=mount).text
+    return ctx.request_context.lifespan_context['sys'].disable_auth_method(path=mount).text
 
 
 @mcp.tool(name='List Authentication Engines')
@@ -86,13 +86,13 @@ async def auth_engine_list(ctx: Context) -> json:
 @mcp.tool(name='Enable Secret Engine')
 def secret_engine_enable(ctx: Context, engine: str, mount: str = None) -> json:
     """enable a vault secret engine"""
-    return ctx.request_context.lifespan_context['client'].sys.enable_secrets_engine(backend_type=engine, path=mount).text
+    return ctx.request_context.lifespan_context['sys'].enable_secrets_engine(backend_type=engine, path=mount).text
 
 
 @mcp.tool(name='Disable Secret Engine')
 def secret_engine_disable(ctx: Context, mount: str) -> json:
     """disable a vault secret engine"""
-    return ctx.request_context.lifespan_context['client'].sys.disable_secrets_engine(path=mount).text
+    return ctx.request_context.lifespan_context['sys'].disable_secrets_engine(path=mount).text
 
 
 @mcp.tool(name='List Secret Engines')
@@ -107,7 +107,7 @@ async def secret_engine_list(ctx: Context) -> json:
 def kv2_write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> json:
     """write a kv2 secret to vault"""
     return json.dumps(
-        ctx.request_context.lifespan_context['client'].secrets.kv.v2.create_or_update_secret(
+        ctx.request_context.lifespan_context['kv2'].create_or_update_secret(
             mount_point=mount,
             path=path,
             secret=secret,
@@ -118,19 +118,19 @@ def kv2_write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict 
 @mcp.tool(name='KV2 Delete')
 def kv2_delete(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """delete a kv2 secret from vault"""
-    return ctx.request_context.lifespan_context['client'].secrets.kv.delete_metadata_and_all_versions(mount_point=mount, path=path).text
+    return ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path).text
 
 
 @mcp.tool(name='KV2 Read')
 def kv2_read(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """read a kv2 secret from a vault"""
-    return json.dumps(ctx.request_context.lifespan_context['client'].secrets.kv.read_secret_version(mount_point=mount, path=path)['data'])
+    return json.dumps(ctx.request_context.lifespan_context['kv2'].read_secret_version(mount_point=mount, path=path)['data'])
 
 
 @mcp.tool(name='KV2 List')
 def kv2_list(ctx: Context, mount: str = 'secret', path: str = '') -> json:
     """list the kv2 secrets in vault"""
-    return json.dumps(ctx.request_context.lifespan_context['client'].secrets.kv.v2.list_secrets(mount_point=mount, path=path)['data']['keys'])
+    return json.dumps(ctx.request_context.lifespan_context['kv2'].list_secrets(mount_point=mount, path=path)['data']['keys'])
 
 
 ## policies
@@ -138,19 +138,19 @@ def kv2_list(ctx: Context, mount: str = 'secret', path: str = '') -> json:
 @mcp.tool(name='Policy Write')
 def policy_write(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> json:
     """write a acl policy to vault"""
-    return ctx.request_context.lifespan_context['client'].sys.create_or_update_acl_policy(name=name, policy=policy).text
+    return ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy).text
 
 
 @mcp.tool(name='Policy Delete')
 def policy_delete(ctx: Context, name: str) -> json:
     """delete a acl policy from vault"""
-    return ctx.request_context.lifespan_context['client'].sys.delete_acl_policy(name=name).text
+    return ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name).text
 
 
 @mcp.tool(name='Policy Read')
 def policy_read(ctx: Context, name: str) -> json:
     """read a acl policy from vault"""
-    return json.dumps(ctx.request_context.lifespan_context['client'].sys.read_acl_policy(name=name))
+    return json.dumps(ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name))
 
 
 @mcp.tool(name='Policy List')
@@ -165,13 +165,13 @@ async def policy_list(ctx: Context) -> json:
 @mcp.tool(name='Enable Audit Device')
 def audit_device_enable(ctx: Context, type: str, path: str) -> json:
     """enable a vault audit device"""
-    return ctx.request_context.lifespan_context['client'].sys.enable_audit_device(device_type=type, path=path).text
+    return ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path).text
 
 
 @mcp.tool(name='Disable Audit Device')
 def audit_device_disable(ctx: Context, path: str) -> json:
     """disable a vault audit device"""
-    return ctx.request_context.lifespan_context['client'].sys.disable_audit_device(path=path).text
+    return ctx.request_context.lifespan_context['sys'].disable_audit_device(path=path).text
 
 
 @mcp.tool(name='List Audit Devices')

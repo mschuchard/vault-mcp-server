@@ -1,7 +1,6 @@
 """vault client"""
 
 import os
-import json
 
 import hvac
 import hvac.exceptions
@@ -19,7 +18,7 @@ def client() -> hvac.Client:
     if not client.is_authenticated:
         raise hvac.exceptions.Unauthorized('invalid authentication')
 
-    if json.loads(client.seal_status)['sealed']:
+    if client.seal_status['sealed']:
         raise hvac.exceptions.VaultNotInitialized('vault server is sealed')
 
     # return authenticated client
