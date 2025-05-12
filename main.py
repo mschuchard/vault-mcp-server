@@ -12,13 +12,13 @@ from vault import client
 
 @asynccontextmanager
 async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
-    """Manage mcp server lifecycle with type-safe context"""
-    # Initialize resources on startup
+    """manage mcp server lifecycle with type-safe context"""
+    # initialize resources on startup
     vault_client: hvac.v1.Client = client.client()
     yield {'client': vault_client, 'sys': vault_client.sys, 'kv2': vault_client.secrets.kv.v2}
 
 
-mcp: FastMCP = FastMCP('Vault', lifespan=server_lifespan)
+mcp: FastMCP = FastMCP(name='Vault', lifespan=server_lifespan)
 
 
 # resources
@@ -182,4 +182,9 @@ async def audit_Device_list(ctx: Context) -> json:
 
 
 if __name__ == '__main__':
+    mcp.run(transport='stdio')
+
+
+def run():
+    """placeholder function for use with mcp run/dev cli"""
     mcp.run(transport='stdio')
