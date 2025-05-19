@@ -33,8 +33,10 @@ This can hopefully be extrapolated and modified to fit other clients if you want
 Until this tool matures beyond an arbitrary point the above hosted Docker Hub registry container image will match the code hosted here at `HEAD`.
 
 ## Features
-- Enable/Disable/List Authentication Engine
-- Enable/Disable/List Secrets Engine
-- KV Version 2 Secrets Engine
+- Authentication Engine: Enable/Disable/List
 - ACL Policies
 - Audit Devices
+- Secrets Engines
+  - Enable/Disable/List
+  - KV Version 2
+  - Transit
