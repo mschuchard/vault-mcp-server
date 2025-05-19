@@ -18,7 +18,7 @@ def client() -> hvac.Client:
     if not client.is_authenticated:
         raise hvac.exceptions.Unauthorized('invalid authentication')
 
-    if client.seal_status['sealed']:
+    if client.sys.is_sealed():
         raise hvac.exceptions.VaultNotInitialized('vault server is sealed')
 
     # return authenticated client
