@@ -17,7 +17,7 @@ def delete(ctx: Context, name: str) -> str:
     return ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name).text
 
 
-def read(ctx: Context, name: str) -> str:
+async def read(ctx: Context, name: str) -> str:
     """read a acl policy from vault"""
     return json.dumps(ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name))
 

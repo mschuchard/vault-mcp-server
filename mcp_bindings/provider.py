@@ -13,13 +13,13 @@ def resource_provider(mcp: FastMCP) -> None:
 def tool_provider(mcp: FastMCP) -> None:
     """define implemented tool integrations"""
     # audit
-    mcp.add_tool(fn=audit.enable, name='Enable Audit Device')
-    mcp.add_tool(fn=audit.disable, name='Disable Audit Device')
-    mcp.add_tool(fn=audit.list, name='List Audit Devices')
+    mcp.add_tool(fn=audit.enable, name='Audit Device Enable')
+    mcp.add_tool(fn=audit.disable, name='Audit Device Disable')
+    mcp.add_tool(fn=audit.list, name='Audit Devices List')
     # auth
-    mcp.add_tool(fn=auth.enable, name='Enable Authentication Engine')
-    mcp.add_tool(fn=auth.disable, name='Disable Authentication Engine')
-    mcp.add_tool(fn=auth.list, name='List Authentication Engines')
+    mcp.add_tool(fn=auth.enable, name='Authentication Engine Enable')
+    mcp.add_tool(fn=auth.disable, name='Authentication Engine Disable')
+    mcp.add_tool(fn=auth.list, name='Authentication Engines List')
     # kv2
     mcp.add_tool(fn=kv2.write, name='KV2 Write')
     mcp.add_tool(fn=kv2.delete, name='KV2 Delete')
@@ -31,14 +31,14 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.add_tool(fn=policy.read, name='Policy Read')
     mcp.add_tool(fn=policy.list, name='Policy List')
     # secret
-    mcp.add_tool(fn=secret.enable, name='Enable Secret Engine')
-    mcp.add_tool(fn=secret.disable, name='Disable Secret Engine')
-    mcp.add_tool(fn=secret.list, name='List Secret Engines')
+    mcp.add_tool(fn=secret.enable, name='Secret Engine Enable')
+    mcp.add_tool(fn=secret.disable, name='Secret Engine Disable')
+    mcp.add_tool(fn=secret.list, name='Secret Engine List')
     # transit
-    mcp.add_tool(fn=transit.create, name='Create Transit Engine Encryption Key')
-    mcp.add_tool(fn=transit.read, name='Read Transit Engine Encryption Key')
-    mcp.add_tool(fn=transit.list, name='List Transit Engine Encryption Keys')
-    mcp.add_tool(fn=transit.delete, name='Delete Transit Engine Encryption Key')
+    mcp.add_tool(fn=transit.create, name='Transit Engine Encryption Key Create')
+    mcp.add_tool(fn=transit.read, name='Transit Engine Encryption Key Read')
+    mcp.add_tool(fn=transit.list, name='Transit Engine Encryption Keys List')
+    mcp.add_tool(fn=transit.delete, name='Transit Engine Encryption Key Delete')
 
 
 def provider(mcp: FastMCP) -> None:

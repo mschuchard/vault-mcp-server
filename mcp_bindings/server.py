@@ -31,7 +31,7 @@ mcp: FastMCP = FastMCP(name='Vault', lifespan=server_lifespan)
     description='List the available enabled Vault authentication engines',
     mime_type='application/json',
 )
-def auth_engines() -> str:
+async def auth_engines() -> str:
     """list the vault authentication engines"""
     return json.dumps(client.client().sys.list_auth_methods())
 
@@ -40,7 +40,7 @@ def auth_engines() -> str:
 @mcp.resource(
     uri='secret://engines', name='Enabled Secret Engines', description='List the available enabled Vault secret engines', mime_type='application/json'
 )
-def secret_engines() -> str:
+async def secret_engines() -> str:
     """list the vault secret engines"""
     return json.dumps(client.client().sys.list_mounted_secrets_engines())
 
@@ -49,13 +49,13 @@ def secret_engines() -> str:
 @mcp.resource(
     uri='sys://policies', name='Configured ACL Policies', description='List the available configured Vault ACL policies', mime_type='application/json'
 )
-def acl_policies() -> str:
+async def acl_policies() -> str:
     """list the vault acl policies"""
     return json.dumps(client.client().sys.list_acl_policies())
 
 
 ## audit
 @mcp.resource(uri='audit://devices', name='Enabled Audit Devices', description='List the available enabled Vault audit devices', mime_type='application/json')
-def audit_devices() -> str:
+async def audit_devices() -> str:
     """list the vault audit devices"""
     return json.dumps(client.client().sys.list_enabled_audit_devices())

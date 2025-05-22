@@ -21,11 +21,11 @@ def delete(ctx: Context, mount: str = 'secret', path: str = '') -> str:
     return ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path).text
 
 
-def read(ctx: Context, mount: str = 'secret', path: str = '') -> str:
+async def read(ctx: Context, mount: str = 'secret', path: str = '') -> str:
     """read a kv2 secret from a vault"""
     return json.dumps(ctx.request_context.lifespan_context['kv2'].read_secret_version(mount_point=mount, path=path)['data'])
 
 
-def list(ctx: Context, mount: str = 'secret', path: str = '') -> str:
+async def list(ctx: Context, mount: str = 'secret', path: str = '') -> str:
     """list the kv2 secrets in vault"""
     return json.dumps(ctx.request_context.lifespan_context['kv2'].list_secrets(mount_point=mount, path=path)['data']['keys'])
