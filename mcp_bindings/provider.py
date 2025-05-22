@@ -39,6 +39,10 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.add_tool(fn=transit.read, name='Transit Engine Encryption Key Read')
     mcp.add_tool(fn=transit.list, name='Transit Engine Encryption Keys List')
     mcp.add_tool(fn=transit.delete, name='Transit Engine Encryption Key Delete')
+    mcp.add_tool(fn=transit.rotate, name='Transit Engine Encryption Key Rotate')
+    mcp.add_tool(fn=transit.encrypt, name='Transit Engine Encrypt Plaintext')
+    mcp.add_tool(fn=transit.decrypt, name='Transit Engine Decrypt Ciphertext')
+    mcp.add_tool(fn=transit.generate, name='Transit Engine Generate Random Bytes')
 
 
 def provider(mcp: FastMCP) -> None:
