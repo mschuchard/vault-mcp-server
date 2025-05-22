@@ -7,7 +7,35 @@ from vault import audit, auth, kv2, policy, secret, transit
 
 def resource_provider(mcp: FastMCP) -> None:
     """define implemented resource integrations"""
-    pass
+    # lists of enabled and configured
+    mcp.add_resource_fn(
+        audit.list,
+        uri='audit://devices',
+        name='Enabled Audit Devices',
+        description='List the available enabled Vault audit devices',
+        mime_type='application/json',
+    )
+    mcp.add_resource_fn(
+        auth.list,
+        uri='auth://engines',
+        name='Enabled Authentication Engines',
+        description='List the available enabled Vault authentication engines',
+        mime_type='application/json',
+    )
+    mcp.add_resource_fn(
+        policy.list,
+        uri='sys://policies',
+        name='Configured ACL Policies',
+        description='List the available configured Vault ACL policies',
+        mime_type='application/json',
+    )
+    mcp.add_resource_fn(
+        secret.list,
+        uri='secret://engines',
+        name='Enabled Secret Engines',
+        description='List the available enabled Vault secret engines',
+        mime_type='application/json',
+    )
 
 
 def tool_provider(mcp: FastMCP) -> None:

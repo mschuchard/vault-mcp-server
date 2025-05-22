@@ -1,10 +1,8 @@
 """vault authentication engine"""
 
 import json
-from typing import Iterable
 
 from fastmcp import Context
-from mcp.server.lowlevel.helper_types import ReadResourceContents
 
 
 def enable(ctx: Context, engine: str, mount: str | None = None) -> str:
@@ -19,5 +17,5 @@ def disable(ctx: Context, mount: str) -> str:
 
 async def list(ctx: Context) -> str:
     """list enabled authentication engines in vault"""
-    engines: Iterable[ReadResourceContents] = await ctx.read_resource('auth://engines')
-    return json.dumps(engines[0].content if len(engines) > 0 else [])  # type: ignore (guaranteed list)
+    engines: dict = ctx.request_context.lifespan_context['sys'].list_auth_methods()['data']
+    return json.dumps(engines if len(engines) > 0 else [])  # type: ignore (guaranteed list)

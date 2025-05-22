@@ -1,10 +1,8 @@
 """vault acl policy"""
 
 import json
-from typing import Iterable
 
 from fastmcp import Context
-from mcp.server.lowlevel.helper_types import ReadResourceContents
 
 
 def write(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> str:
@@ -24,5 +22,5 @@ async def read(ctx: Context, name: str) -> str:
 
 async def list(ctx: Context) -> str:
     """list acl policies in vault"""
-    policies: Iterable[ReadResourceContents] = await ctx.read_resource('sys://policies')
-    return json.dumps(policies[0].content if len(policies) > 0 else [])  # type: ignore (guaranteed list)
+    policies: list[str] = ctx.request_context.lifespan_context['sys'].list_acl_policies()['data']['keys']
+    return json.dumps(policies if len(policies) > 0 else [])  # type: ignore (guaranteed list)
