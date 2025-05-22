@@ -2,7 +2,7 @@
 
 import json
 
-from mcp.server.fastmcp import Context
+from fastmcp import Context
 
 
 def write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> str:

@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 import json
 
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 import hvac
 
 from vault import client

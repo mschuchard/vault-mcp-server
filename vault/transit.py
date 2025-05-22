@@ -3,7 +3,7 @@
 import json
 import base64
 
-from mcp.server.fastmcp import Context
+from fastmcp import Context
 
 
 def create(ctx: Context, name: str, mount: str = 'transit') -> str:

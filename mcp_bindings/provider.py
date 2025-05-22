@@ -1,6 +1,6 @@
 """mcp vault integration provider"""
 
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 from vault import audit, auth, kv2, policy, secret, transit
 

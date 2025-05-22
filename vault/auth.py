@@ -3,7 +3,7 @@
 import json
 from typing import Iterable
 
-from mcp.server.fastmcp import Context
+from fastmcp import Context
 from mcp.server.lowlevel.helper_types import ReadResourceContents
 
 
