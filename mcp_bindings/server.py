@@ -2,13 +2,11 @@
 
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
-from typing import Literal
 import json
 
 from mcp.server.fastmcp import FastMCP
 import hvac
 
-from mcp_bindings import provider
 from vault import client
 
 
@@ -61,10 +59,3 @@ def acl_policies() -> str:
 def audit_devices() -> str:
     """list the vault audit devices"""
     return json.dumps(client.client().sys.list_enabled_audit_devices())
-
-
-def run(transport: Literal['stdio', 'sse', 'streamable-http'] = 'stdio') -> None:
-    """function to satisfy random arbitrary FastMCP stipulation --> Important: When using fastmcp run, it ignores the if name == "main" block entirely. Instead, it looks for a FastMCP object named mcp, server, or app and calls its run() method directly with the transport options you specify."""
-    # load integrations
-    provider.provider(mcp)
-    mcp.run(transport=transport)
