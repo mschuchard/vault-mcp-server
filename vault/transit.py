@@ -8,7 +8,7 @@ from fastmcp import Context
 
 def create(ctx: Context, name: str, mount: str = 'transit') -> str:
     """create a transit encryption key in vault"""
-    return ctx.request_context.lifespan_context['transit'].create_key(name=name, mount_point='transit').text
+    return ctx.request_context.lifespan_context['transit'].create_key(name=name, mount_point=mount)['data']
 
 
 async def read(ctx: Context, name: str, mount: str = 'transit') -> str:
@@ -23,12 +23,12 @@ async def list(ctx: Context, mount: str = 'transit') -> str:
 
 def delete(ctx: Context, name: str, mount: str = 'transit') -> str:
     """delete transit encryption key from vault"""
-    return ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount).text
+    return ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount)
 
 
 def rotate(ctx: Context, name: str, mount: str = 'transit') -> str:
     """rotate transit encryption key in vault"""
-    return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount).text
+    return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount)['data']
 
 
 def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
