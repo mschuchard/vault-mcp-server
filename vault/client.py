@@ -1,6 +1,7 @@
 """vault client"""
 
 import os
+import urllib.parse
 
 import hvac
 import hvac.exceptions
@@ -8,9 +9,19 @@ import hvac.exceptions
 
 def client() -> hvac.Client:
     """construct authenticated vault client"""
-    # assign values from environment variables (standard input method for mcp clients)
+    # assign url value
     url: str = os.getenv('VAULT_URL', 'http://127.0.0.1:8200')
+    # validate url
+    try:
+        urllib.parse.urlparse(url)
+    except AttributeError:
+        raise ValueError('invalid vault url')
+
+    # assign token value
     token: str = os.getenv('VAULT_TOKEN', '')
+    # validate token value
+    if len(token) != 28:
+        raise ValueError('invalid token')
 
     # construct and validate client
     client: hvac.Client = hvac.Client(url=url, token=token)
