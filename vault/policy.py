@@ -5,8 +5,8 @@ import json
 from fastmcp import Context
 
 
-def write(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> str:
-    """write a acl policy to vault"""
+def create(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> str:
+    """create a acl policy in vault"""
     return ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy).text
 
 

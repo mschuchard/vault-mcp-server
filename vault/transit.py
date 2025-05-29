@@ -22,24 +22,24 @@ async def list(ctx: Context, mount: str = 'transit') -> str:
 
 
 def delete(ctx: Context, name: str, mount: str = 'transit') -> str:
-    """delete transit encryption key from vault"""
+    """delete a transit encryption key from vault"""
     return ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount)
 
 
 def rotate(ctx: Context, name: str, mount: str = 'transit') -> str:
-    """rotate transit encryption key in vault"""
+    """rotate a transit encryption key in vault"""
     return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount)['data']
 
 
 def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
-    """encrypt plaintext with transit encryption key"""
+    """encrypt plaintext with a transit encryption key"""
     return ctx.request_context.lifespan_context['transit'].encrypt_data(name=name, plaintext=base64.b64encode(text.encode()), mount_point=mount)['data'][
         'ciphertext'
     ]
 
 
 def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
-    """decrypt plaintext with transit encryption key"""
+    """decrypt plaintext with a transit encryption key"""
     return json.dumps(ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext'])
 
 

@@ -5,8 +5,8 @@ import json
 from fastmcp import Context
 
 
-def write(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> str:
-    """write a kv2 secret to vault"""
+def create_update(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> str:
+    """create or update a kv2 secret in vault"""
     return json.dumps(
         ctx.request_context.lifespan_context['kv2'].create_or_update_secret(
             mount_point=mount,

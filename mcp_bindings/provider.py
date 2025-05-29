@@ -49,12 +49,12 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.add_tool(fn=auth.disable, name='Authentication Engine Disable')
     mcp.add_tool(fn=auth.list, name='Authentication Engines List')
     # kv2
-    mcp.add_tool(fn=kv2.write, name='KV2 Write')
+    mcp.add_tool(fn=kv2.create_update, name='KV2 Create or Update')
     mcp.add_tool(fn=kv2.delete, name='KV2 Delete')
     mcp.add_tool(fn=kv2.read, name='KV2 Read')
     mcp.add_tool(fn=kv2.list, name='KV2 List')
     # policy
-    mcp.add_tool(fn=policy.write, name='Policy Write')
+    mcp.add_tool(fn=policy.create, name='Policy Write')
     mcp.add_tool(fn=policy.delete, name='Policy Delete')
     mcp.add_tool(fn=policy.read, name='Policy Read')
     mcp.add_tool(fn=policy.list, name='Policy List')
