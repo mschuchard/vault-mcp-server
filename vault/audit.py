@@ -1,7 +1,5 @@
 """vault audit device"""
 
-import json
-
 from fastmcp import Context
 
 
@@ -15,7 +13,7 @@ def disable(ctx: Context, path: str) -> str:
     return ctx.request_context.lifespan_context['sys'].disable_audit_device(path=path).text
 
 
-async def list(ctx: Context) -> str:
+async def list(ctx: Context) -> dict:
     """list enabled audit devices in vault"""
     devices: dict = ctx.request_context.lifespan_context['sys'].list_enabled_audit_devices()['data']
-    return json.dumps(devices if len(devices) > 0 else [])  # type: ignore (guaranteed list)
+    return devices if len(devices) > 0 else {}

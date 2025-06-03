@@ -1,7 +1,5 @@
 """vault acl policy"""
 
-import json
-
 from fastmcp import Context
 
 
@@ -17,10 +15,10 @@ def delete(ctx: Context, name: str) -> str:
 
 async def read(ctx: Context, name: str) -> str:
     """read a acl policy from vault"""
-    return json.dumps(ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name))
+    return ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name)['data']
 
 
-async def list(ctx: Context) -> str:
+async def list(ctx: Context) -> list[str]:
     """list acl policies in vault"""
     policies: list[str] = ctx.request_context.lifespan_context['sys'].list_acl_policies()['data']['keys']
-    return json.dumps(policies if len(policies) > 0 else [])  # type: ignore (guaranteed list)
+    return policies if len(policies) > 0 else []

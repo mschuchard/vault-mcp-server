@@ -1,32 +1,31 @@
 """vault transit"""
 
-import json
 import base64
 
 from fastmcp import Context
 
 
-def create(ctx: Context, name: str, mount: str = 'transit') -> str:
+def create(ctx: Context, name: str, mount: str = 'transit') -> dict:
     """create a transit encryption key in vault"""
     return ctx.request_context.lifespan_context['transit'].create_key(name=name, mount_point=mount)['data']
 
 
-async def read(ctx: Context, name: str, mount: str = 'transit') -> str:
+async def read(ctx: Context, name: str, mount: str = 'transit') -> dict:
     """read a transit encryption key from vault"""
-    return json.dumps(ctx.request_context.lifespan_context['transit'].read_key(name=name, mount_point=mount))
+    return ctx.request_context.lifespan_context['transit'].read_key(name=name, mount_point=mount)['data']
 
 
-async def list(ctx: Context, mount: str = 'transit') -> str:
+async def list(ctx: Context, mount: str = 'transit') -> dict:
     """list transit encryption keys in vault"""
-    return json.dumps(ctx.request_context.lifespan_context['transit'].list_keys(mount_point=mount)['data']['keys'])
+    return ctx.request_context.lifespan_context['transit'].list_keys(mount_point=mount)['data']['keys']
 
 
-def delete(ctx: Context, name: str, mount: str = 'transit') -> str:
+def delete(ctx: Context, name: str, mount: str = 'transit') -> dict:
     """delete a transit encryption key from vault"""
     return ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount)
 
 
-def rotate(ctx: Context, name: str, mount: str = 'transit') -> str:
+def rotate(ctx: Context, name: str, mount: str = 'transit') -> dict:
     """rotate a transit encryption key in vault"""
     return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount)['data']
 
@@ -38,9 +37,9 @@ def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
     ]
 
 
-def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
+def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> dict:
     """decrypt plaintext with a transit encryption key"""
-    return json.dumps(ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext'])
+    return ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext']
 
 
 def generate(ctx: Context, num_bytes: int, mount: str = 'transit') -> str:

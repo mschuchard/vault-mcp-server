@@ -1,7 +1,5 @@
 """vault authentication engine"""
 
-import json
-
 from fastmcp import Context
 
 
@@ -15,7 +13,7 @@ def disable(ctx: Context, mount: str) -> str:
     return ctx.request_context.lifespan_context['sys'].disable_auth_method(path=mount).text
 
 
-async def list(ctx: Context) -> str:
+async def list(ctx: Context) -> dict:
     """list enabled authentication engines in vault"""
     engines: dict = ctx.request_context.lifespan_context['sys'].list_auth_methods()['data']
-    return json.dumps(engines if len(engines) > 0 else [])  # type: ignore (guaranteed list)
+    return engines if len(engines) > 0 else {}
