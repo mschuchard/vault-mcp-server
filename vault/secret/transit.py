@@ -16,7 +16,7 @@ async def read(ctx: Context, name: str, mount: str = 'transit') -> dict:
 
 
 async def list(ctx: Context, mount: str = 'transit') -> dict:
-    """list transit encryption keys in vault"""
+    """list the transit encryption keys in vault"""
     return ctx.request_context.lifespan_context['transit'].list_keys(mount_point=mount)['data']['keys']
 
 
@@ -31,17 +31,17 @@ def rotate(ctx: Context, name: str, mount: str = 'transit') -> dict:
 
 
 def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
-    """encrypt plaintext with a transit encryption key"""
+    """encrypt plaintext with a vault transit encryption key"""
     return ctx.request_context.lifespan_context['transit'].encrypt_data(name=name, plaintext=base64.b64encode(text.encode()), mount_point=mount)['data'][
         'ciphertext'
     ]
 
 
 def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> dict:
-    """decrypt plaintext with a transit encryption key"""
+    """decrypt ciphertext with a vault transit encryption key"""
     return ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext']
 
 
 def generate(ctx: Context, num_bytes: int, mount: str = 'transit') -> str:
-    """generate random bytes"""
+    """generate random bytes through the vault transit engine"""
     return ctx.request_context.lifespan_context['transit'].generate_random_bytes(n_bytes=num_bytes, mount_point=mount)['data']['random_bytes']

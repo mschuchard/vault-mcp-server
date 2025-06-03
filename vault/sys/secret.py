@@ -14,6 +14,6 @@ def disable(ctx: Context, mount: str) -> str:
 
 
 async def list(ctx: Context) -> dict:
-    """list enabled secret engines in vault"""
+    """list enabled vault secret engines"""
     engines: dict = ctx.request_context.lifespan_context['sys'].list_mounted_secrets_engines()['data']
     return engines if len(engines) > 0 else {}

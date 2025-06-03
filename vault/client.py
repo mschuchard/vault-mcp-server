@@ -8,7 +8,7 @@ import hvac.exceptions
 
 
 def client() -> hvac.Client:
-    """construct authenticated vault client"""
+    """construct and validate authenticated vault client"""
     # assign url value
     url: str = os.getenv('VAULT_URL', 'http://127.0.0.1:8200')
     # validate url
