@@ -2,6 +2,8 @@
 
 This is a toy. Python was selected as the language since this is my first MCP server and the Python SDK is super easy to use, and HVAC is a very functional Vault SDK.
 
+The MCP Server container image is hosted at [Dockerhub](https://hub.docker.com/r/matthewschuchard/vault-mcp-server).
+
 ## Claude Desktop Config
 
 This can hopefully be extrapolated and modified to fit other clients if you want to play with this server for whatever reason.

@@ -1,6 +1,7 @@
 """vault kv2"""
 
 from fastmcp import Context
+import hvac.exceptions
 
 
 def create_update(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> dict:
@@ -24,5 +25,7 @@ async def read(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
 
 async def list(ctx: Context, mount: str = 'secret', path: str = '') -> list[str]:
     """list the key-value version 2 secrets in vault"""
-    secrets: dict = ctx.request_context.lifespan_context['kv2'].list_secrets(mount_point=mount, path=path)
-    return secrets['data'].get('keys', []) if secrets else []
+    try:
+        return ctx.request_context.lifespan_context['kv2'].list_secrets(mount_point=mount, path=path)['data'].get('keys', [])
+    except hvac.exceptions.InvalidPath:
+        return []
