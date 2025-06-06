@@ -10,12 +10,12 @@ def create_update(ctx: Context, mount: str = 'secret', path: str = '', secret: d
         mount_point=mount,
         path=path,
         secret=secret,
-    )
+    )['data']
 
 
-def delete(ctx: Context, mount: str = 'secret', path: str = '') -> str:
+def delete(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
     """delete a key-value version 2 secret from vault"""
-    return ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path).text
+    return ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path)
 
 
 async def read(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
@@ -29,3 +29,17 @@ async def list(ctx: Context, mount: str = 'secret', path: str = '') -> list[str]
         return ctx.request_context.lifespan_context['kv2'].list_secrets(mount_point=mount, path=path)['data'].get('keys', [])
     except hvac.exceptions.InvalidPath:
         return []
+
+
+async def metadata(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
+    """read the metadata and versions for a key-value version 2 secret in vault"""
+    return ctx.request_context.lifespan_context['kv2'].read_secret_metadata(mount_point=mount, path=path)['data']
+
+
+async def patch(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> dict:
+    """update the data of a key-value version 2 secret in vault without overwriting the current secret data"""
+    return ctx.request_context.lifespan_context['kv2'].patch(
+        mount_point=mount,
+        path=path,
+        secret=secret,
+    )['data']

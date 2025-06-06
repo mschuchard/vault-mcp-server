@@ -54,6 +54,8 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.add_tool(fn=kv2.delete, name='KV2 Delete')
     mcp.add_tool(fn=kv2.read, name='KV2 Read')
     mcp.add_tool(fn=kv2.list, name='KV2 List')
+    mcp.add_tool(fn=kv2.metadata, name='KV2 Metadata and Versions')
+    mcp.add_tool(fn=kv2.patch, name='KV2 Patch')
     # policy
     mcp.add_tool(fn=policy.create, name='Policy Write')
     mcp.add_tool(fn=policy.delete, name='Policy Delete')
