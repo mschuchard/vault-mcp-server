@@ -41,4 +41,4 @@ Until this tool matures beyond an arbitrary point the above hosted Docker Hub re
 - Secrets Engines
   - Enable/Disable/List
   - KV Version 2
-  - Transit (Encrypt/Decrypt currently experiencing HVAC body serialization issues)
+  - Transit

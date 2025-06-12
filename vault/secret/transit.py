@@ -36,14 +36,16 @@ def rotate(ctx: Context, name: str, mount: str = 'transit') -> dict:
 
 def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
     """encrypt plaintext with a vault transit encryption key"""
-    return ctx.request_context.lifespan_context['transit'].encrypt_data(name=name, plaintext=base64.b64encode(text.encode()), mount_point=mount)['data'][
-        'ciphertext'
-    ]
+    return ctx.request_context.lifespan_context['transit'].encrypt_data(name=name, plaintext=base64.b64encode(text.encode()).decode(), mount_point=mount)[
+        'data'
+    ]['ciphertext']
 
 
 def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
     """decrypt ciphertext with a vault transit encryption key"""
-    return ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext']
+    return base64.b64decode(
+        ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext'].encode()
+    ).decode()
 
 
 def generate(ctx: Context, num_bytes: int, mount: str = 'transit') -> str:
