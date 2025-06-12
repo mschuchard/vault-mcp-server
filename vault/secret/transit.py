@@ -24,9 +24,9 @@ async def list(ctx: Context, mount: str = 'transit') -> list:
         return []
 
 
-def delete(ctx: Context, name: str, mount: str = 'transit') -> dict:
+def delete(ctx: Context, name: str, mount: str = 'transit') -> dict[str, bool]:
     """delete a transit encryption key from vault"""
-    return ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount)
+    return {'success': ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount).ok}
 
 
 def rotate(ctx: Context, name: str, mount: str = 'transit') -> dict:

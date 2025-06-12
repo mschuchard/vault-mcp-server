@@ -3,14 +3,14 @@
 from fastmcp import Context
 
 
-def enable(ctx: Context, type: str, path: str) -> str:
+def enable(ctx: Context, type: str, path: str) -> dict[str, bool]:
     """enable a vault audit device"""
-    return ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path).text
+    return {'success': ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path).ok}
 
 
-def disable(ctx: Context, path: str) -> str:
+def disable(ctx: Context, path: str) -> dict[str, bool]:
     """disable a vault audit device"""
-    return ctx.request_context.lifespan_context['sys'].disable_audit_device(path=path).text
+    return {'success': ctx.request_context.lifespan_context['sys'].disable_audit_device(path=path).ok}
 
 
 async def list(ctx: Context) -> dict:

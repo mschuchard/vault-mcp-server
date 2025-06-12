@@ -13,9 +13,9 @@ def create_update(ctx: Context, mount: str = 'secret', path: str = '', secret: d
     )['data']
 
 
-def delete(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
+def delete(ctx: Context, mount: str = 'secret', path: str = '') -> dict[str, bool]:
     """delete a key-value version 2 secret from vault"""
-    return ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path)
+    return {'success': ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path).ok}
 
 
 async def read(ctx: Context, mount: str = 'secret', path: str = '') -> dict:

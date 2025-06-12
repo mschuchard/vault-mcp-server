@@ -3,14 +3,14 @@
 from fastmcp import Context
 
 
-def create(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> str:
+def create(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> dict[str, bool]:
     """create a vault acl policy"""
-    return ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy).text
+    return {'success': ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy).ok}
 
 
-def delete(ctx: Context, name: str) -> str:
+def delete(ctx: Context, name: str) -> dict[str, bool]:
     """delete a vault acl policy"""
-    return ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name).text
+    return {'success': ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name).ok}
 
 
 async def read(ctx: Context, name: str) -> str:

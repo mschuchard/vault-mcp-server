@@ -3,14 +3,14 @@
 from fastmcp import Context
 
 
-def enable(ctx: Context, engine: str, mount: str | None = None) -> str:
+def enable(ctx: Context, engine: str, mount: str | None = None) -> dict[str, bool]:
     """enable a vault secret engine"""
-    return ctx.request_context.lifespan_context['sys'].enable_secrets_engine(backend_type=engine, path=mount).text
+    return {'success': ctx.request_context.lifespan_context['sys'].enable_secrets_engine(backend_type=engine, path=mount).ok}
 
 
-def disable(ctx: Context, mount: str) -> str:
+def disable(ctx: Context, mount: str) -> dict[str, bool]:
     """disable a vault secret engine"""
-    return ctx.request_context.lifespan_context['sys'].disable_secrets_engine(path=mount).text
+    return {'success': ctx.request_context.lifespan_context['sys'].disable_secrets_engine(path=mount).ok}
 
 
 async def list(ctx: Context) -> dict:
