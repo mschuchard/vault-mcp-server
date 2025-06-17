@@ -29,6 +29,7 @@ WORKDIR /app
  
 COPY --from=uv --chown=app:app /app/main.py /app/main.py
 COPY --from=uv --chown=app:app /app/vault /app/vault
+COPY --from=uv --chown=app:app /app/mcp_bindings /app/mcp_bindings
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
 # Place executables in the environment at the front of the path
