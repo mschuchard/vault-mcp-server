@@ -1,6 +1,8 @@
 # Vault MCP Server
 
-This is a toy. Python was selected as the language since this is my first MCP server and the Python SDK is super easy to use, and HVAC is a very functional Vault SDK.
+This is no longer a toy, and thus will soon begin a formal versioned release schedule. An initial version, updated documentation, and `CHANGELOG` are forthcoming.
+
+Python was selected as the language since this is my first MCP server and the Python SDK is super easy to use, and HVAC is a very functional Vault SDK.
 
 The MCP Server container image is hosted at [Dockerhub](https://hub.docker.com/r/matthewschuchard/vault-mcp-server).
 
@@ -34,7 +36,8 @@ These can hopefully be extrapolated and modified to fit other clients if you wan
 ```
 
 **VSCode**
-The `MCP: Add Server` command can also streamline this. The values below can be entered into the input prompts, and then the JSON file is opened afterward for further updates if necessary.
+
+The `MCP: Add Server` command can also streamline this configuration. The values below can be entered into the input prompts, and then the JSON file is automically opened within a pane afterward for further updates if necessary.
 ```json
 {
   "mcp": {
@@ -62,7 +65,7 @@ The `MCP: Add Server` command can also streamline this. The values below can be 
 }
 ```
 
-Until this tool matures beyond an arbitrary point the above hosted Docker Hub registry container image will match the code hosted here at `HEAD`.
+Until this tool is formally released at version `1.0.0` the hosted Docker Hub registry container image will match the code hosted here at `HEAD`.
 
 ## Features
 - ACL Policies
