@@ -1,6 +1,7 @@
 """mcp vault integration provider"""
 
 from fastmcp import FastMCP
+from fastmcp.resources import Resource
 
 from vault.secret import kv2, transit
 from vault.sys import audit, auth, policy, secret
@@ -9,33 +10,41 @@ from vault.sys import audit, auth, policy, secret
 def resource_provider(mcp: FastMCP) -> None:
     """define implemented resource integrations"""
     # lists of enabled and configured
-    mcp.add_resource_fn(
-        audit.list,
-        uri='audit://devices',
-        name='Enabled Audit Devices',
-        description='List the available enabled Vault audit devices',
-        mime_type='application/json',
+    mcp.add_resource(
+        Resource.from_function(
+            fn=audit.list,
+            uri='audit://devices',
+            name='Enabled Audit Devices',
+            description='List the available enabled Vault audit devices',
+            mime_type='application/json',
+        )
     )
-    mcp.add_resource_fn(
-        auth.list,
-        uri='auth://engines',
-        name='Enabled Authentication Engines',
-        description='List the available enabled Vault authentication engines',
-        mime_type='application/json',
+    mcp.add_resource(
+        Resource.from_function(
+            fn=auth.list,
+            uri='auth://engines',
+            name='Enabled Authentication Engines',
+            description='List the available enabled Vault authentication engines',
+            mime_type='application/json',
+        )
     )
-    mcp.add_resource_fn(
-        policy.list,
-        uri='sys://policies',
-        name='Configured ACL Policies',
-        description='List the available configured Vault ACL policies',
-        mime_type='application/json',
+    mcp.add_resource(
+        Resource.from_function(
+            fn=policy.list,
+            uri='sys://policies',
+            name='Configured ACL Policies',
+            description='List the available configured Vault ACL policies',
+            mime_type='application/json',
+        )
     )
-    mcp.add_resource_fn(
-        secret.list,
-        uri='secret://engines',
-        name='Enabled Secret Engines',
-        description='List the available enabled Vault secret engines',
-        mime_type='application/json',
+    mcp.add_resource(
+        Resource.from_function(
+            fn=secret.list,
+            uri='secret://engines',
+            name='Enabled Secret Engines',
+            description='List the available enabled Vault secret engines',
+            mime_type='application/json',
+        )
     )
 
 
