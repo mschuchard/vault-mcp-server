@@ -14,7 +14,7 @@ def resource_provider(mcp: FastMCP) -> None:
         Resource.from_function(
             fn=audit.list,
             uri='audit://devices',
-            name='Enabled Audit Devices',
+            name='enabled-audit-devices',
             description='List the available enabled Vault audit devices',
             mime_type='application/json',
         )
@@ -23,7 +23,7 @@ def resource_provider(mcp: FastMCP) -> None:
         Resource.from_function(
             fn=auth.list,
             uri='auth://engines',
-            name='Enabled Authentication Engines',
+            name='enabled-authentication-engines',
             description='List the available enabled Vault authentication engines',
             mime_type='application/json',
         )
@@ -32,7 +32,7 @@ def resource_provider(mcp: FastMCP) -> None:
         Resource.from_function(
             fn=policy.list,
             uri='sys://policies',
-            name='Configured ACL Policies',
+            name='configured-acl-policies',
             description='List the available configured Vault ACL policies',
             mime_type='application/json',
         )
@@ -41,7 +41,7 @@ def resource_provider(mcp: FastMCP) -> None:
         Resource.from_function(
             fn=secret.list,
             uri='secret://engines',
-            name='Enabled Secret Engines',
+            name='enabled-secret-engines',
             description='List the available enabled Vault secret engines',
             mime_type='application/json',
         )
