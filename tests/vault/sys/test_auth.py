@@ -1,0 +1,27 @@
+"""test vault authentication engine mcp integrations"""
+
+import pytest
+
+from fastmcp import FastMCP, Client
+
+from mcp_bindings import server, provider
+
+mcp: FastMCP = FastMCP(name='Vault', lifespan=server.server_lifespan)
+
+
+@pytest.mark.asyncio
+async def test_run() -> None:
+    async with Client(mcp) as client:
+        provider.provider(mcp)
+
+        # enable
+        result = await client.call_tool(name='authentication-engine-enable', arguments={'engine': 'kubernetes'})
+        assert result[0]
+
+        # list
+        result = await client.call_tool(name='authentication-engines-list')
+        assert result[0]
+
+        # disable
+        result = await client.call_tool(name='authentication-engine-disable', arguments={'mount': 'kubernetes'})
+        assert result[0]
