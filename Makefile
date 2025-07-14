@@ -6,6 +6,7 @@ shutdown:
 	@killall vault
 
 unit:
+# unit tests are not idempotent per vault instance
 	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run pytest
 
 accept:
