@@ -1,4 +1,4 @@
-"""test mcp provider support"""
+"""test vault kv2 mcp integrations"""
 
 import pytest
 
