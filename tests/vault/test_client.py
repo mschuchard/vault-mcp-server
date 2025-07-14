@@ -22,14 +22,13 @@ def test_client() -> None:
     assert overridden_client.token == '1234567890123456789012345678'
 
 
-def test_client_errors():
+def test_client_errors() -> None:
+    # bad token
+    os.environ['VAULT_TOKEN'] = 'short_token'
+    with pytest.raises(ValueError, match='invalid token'):
+        client.client()
+
     # bad url
     os.environ['VAULT_URL'] = 'invalid_url'
     with pytest.raises(ValueError, match='invalid vault url'):
-        client.client()
-
-    # bad token
-    del os.environ['VAULT_URL']
-    os.environ['VAULT_TOKEN'] = 'short_token'
-    with pytest.raises(ValueError, match='invalid token'):
         client.client()

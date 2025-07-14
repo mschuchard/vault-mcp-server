@@ -37,28 +37,26 @@ These can hopefully be extrapolated and modified to fit other clients if you wan
 
 **VSCode**
 
-The `MCP: Add Server` command can also streamline this configuration. The values below can be entered into the input prompts, and then the JSON file is automically opened within a pane afterward for further updates if necessary.
+The `MCP: Add Server --> Docker Image` command can also streamline this configuration. The values below can be entered into the input prompts, and then the `mcp.json` file is automically opened within a pane afterward for further updates if necessary.
 ```json
 {
-  "mcp": {
-    "servers": {
-      "vault": {
-        "type": "stdio",
-        "command": "docker",
-        "args": [
-          "run",
-          "-i",
-          "--rm",
-          "-e",
-          "VAULT_URL",
-          "-e",
-          "VAULT_TOKEN",
-          "matthewschuchard/vault-mcp-server"
-        ],
-        "env": {
-          "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
-          "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>"
-        }
+  "servers": {
+    "vault": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "VAULT_URL",
+        "-e",
+        "VAULT_TOKEN",
+        "matthewschuchard/vault-mcp-server"
+      ],
+      "env": {
+        "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
+        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>"
       }
     }
   }

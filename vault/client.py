@@ -12,9 +12,8 @@ def client() -> hvac.Client:
     # assign url value
     url: str = os.getenv('VAULT_URL', 'http://127.0.0.1:8200')
     # validate url
-    try:
-        urllib.parse.urlparse(url)
-    except AttributeError:
+    parsed = urllib.parse.urlparse(url)
+    if not all([parsed.scheme, parsed.netloc]):
         raise ValueError('invalid vault url')
 
     # assign token value
