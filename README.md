@@ -1,10 +1,10 @@
 # Vault MCP Server
 
-This is no longer a toy, and thus will soon begin a formal versioned release schedule. An initial version, updated documentation, and `CHANGELOG` are forthcoming.
+There is now an official Vault MCP Server from Hashicorp. Therefore, the alternative third-party Vault MCP Server will continue to exist and be updated with features and fixes, but no attempt will be made to compete with the official product. The third-party Vault MCP Server can be executed locally instead of only remotely (although in many situations remote is preferable), and will continue to be available as a container image.
 
-Python was selected as the language since this is my first MCP server and the Python SDK is super easy to use, and HVAC is a very functional Vault SDK.
+Due to this policy enacted because of the official product release, there will be no formal release process, versioning, or changelog. This product is also not recommended for enterprise production usage.
 
-The MCP Server container image is hosted at [Dockerhub](https://hub.docker.com/r/matthewschuchard/vault-mcp-server).
+The MCP Server container image is hosted at [Dockerhub](https://hub.docker.com/r/matthewschuchard/vault-mcp-server), and it represents the code hosted here at `HEAD`.
 
 ## Desktop Configs
 
@@ -62,8 +62,6 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
   }
 }
 ```
-
-Until this tool is formally released at version `1.0.0` the hosted Docker Hub registry container image will match the code hosted here at `HEAD`.
 
 ## Features
 - ACL Policies

@@ -1,4 +1,4 @@
-"""test vault secret engine mcp integrations"""
+"""test vault policy mcp integrations"""
 
 import pytest
 
