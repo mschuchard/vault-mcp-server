@@ -2,18 +2,12 @@
 
 import pytest
 
-from fastmcp import FastMCP, Client
-
-from mcp_bindings import server, provider
-
-mcp: FastMCP = FastMCP(name='Vault', lifespan=server.server_lifespan)
+from tests import utils
 
 
 @pytest.mark.asyncio
-async def test_run() -> None:
-    async with Client(mcp) as client:
-        provider.provider(mcp)
-
+async def test_auth() -> None:
+    async with utils.mcp_client() as client:
         # enable
         result = await client.call_tool(name='authentication-engine-enable', arguments={'engine': 'kubernetes'})
         assert result[0]

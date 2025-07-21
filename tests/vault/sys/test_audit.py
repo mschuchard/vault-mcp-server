@@ -2,18 +2,12 @@
 
 import pytest
 
-from fastmcp import FastMCP, Client
-
-from mcp_bindings import server, provider
-
-mcp: FastMCP = FastMCP(name='Vault', lifespan=server.server_lifespan)
+from tests import utils
 
 
 @pytest.mark.asyncio
-async def test_run() -> None:
-    async with Client(mcp) as client:
-        provider.provider(mcp)
-
+async def test_audit() -> None:
+    async with utils.mcp_client() as client:
         # enable: TODO requires options to actually function, and so wait on expanded functionality
         result = await client.call_tool(name='audit-device-enable', arguments={'path': 'tmpfile', 'type': 'file'})
         assert result[0]

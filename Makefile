@@ -5,8 +5,7 @@ bootstrap:
 shutdown:
 	@killall vault
 
-unit:
-# unit tests are not idempotent per vault instance
+unit: shutdown bootstrap
 	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run pytest
 
 accept:

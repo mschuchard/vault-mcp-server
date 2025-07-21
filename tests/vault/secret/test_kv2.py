@@ -2,18 +2,12 @@
 
 import pytest
 
-from fastmcp import FastMCP, Client
-
-from mcp_bindings import server, provider
-
-mcp: FastMCP = FastMCP(name='Vault', lifespan=server.server_lifespan)
+from tests import utils
 
 
 @pytest.mark.asyncio
-async def test_run() -> None:
-    async with Client(mcp) as client:
-        provider.provider(mcp)
-
+async def test_kv2() -> None:
+    async with utils.mcp_client() as client:
         # create_update
         result = await client.call_tool(name='kv2-create-or-update', arguments={'path': 'mysecret', 'secret': {'foo': 'bar', 'baz': 'bat'}})
         assert result[0]
