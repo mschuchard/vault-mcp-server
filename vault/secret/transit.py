@@ -6,9 +6,19 @@ from fastmcp import Context
 import hvac.exceptions
 
 
-def create(ctx: Context, name: str, mount: str = 'transit') -> dict:
+def create(
+    ctx: Context,
+    name: str,
+    mount: str = 'transit',
+    type: str | None = None,
+    convergent_encryption: bool | None = None,
+    derived: bool | None = None,
+    auto_rotate_period: str | None = None,
+) -> dict:
     """create a transit encryption key in vault"""
-    return ctx.request_context.lifespan_context['transit'].create_key(name=name, mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['transit'].create_key(
+        name=name, mount_point=mount, key_type=type, convergent_encryption=convergent_encryption, derived=derived, auto_rotate_period=auto_rotate_period
+    )['data']
 
 
 async def read(ctx: Context, name: str, mount: str = 'transit') -> dict:
@@ -34,14 +44,14 @@ def rotate(ctx: Context, name: str, mount: str = 'transit') -> dict:
     return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount)['data']
 
 
-def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
+def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit', context: str | None = None, convergent_encryption: bool | None = None) -> str:
     """encrypt plaintext with a vault transit encryption key"""
-    return ctx.request_context.lifespan_context['transit'].encrypt_data(name=name, plaintext=base64.b64encode(text.encode()).decode(), mount_point=mount)[
-        'data'
-    ]['ciphertext']
+    return ctx.request_context.lifespan_context['transit'].encrypt_data(
+        name=name, plaintext=base64.urlsafe_b64encode(text.encode()).decode(), mount_point=mount, context=context, convergent_encryption=convergent_encryption
+    )['data']['ciphertext']
 
 
-def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit') -> str:
+def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit', context: str | None = None) -> str:
     """decrypt ciphertext with a vault transit encryption key"""
     return base64.b64decode(
         ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext'].encode()
