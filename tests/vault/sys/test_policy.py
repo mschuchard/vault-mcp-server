@@ -9,7 +9,7 @@ from tests import utils
 async def test_policy() -> None:
     async with utils.mcp_client() as client:
         # create
-        result = await client.call_tool(name='policy-create', arguments={'name': 'mypolicy', 'policy': {}})
+        result = await client.call_tool(name='policy-create-or-update', arguments={'name': 'mypolicy', 'policy': {}})
         assert result[0]
 
         # list

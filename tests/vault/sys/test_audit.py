@@ -8,8 +8,8 @@ from tests import utils
 @pytest.mark.asyncio
 async def test_audit() -> None:
     async with utils.mcp_client() as client:
-        # enable: TODO requires options to actually function, and so wait on expanded functionality
-        result = await client.call_tool(name='audit-device-enable', arguments={'path': 'tmpfile', 'type': 'file'})
+        # enable
+        result = await client.call_tool(name='audit-device-enable', arguments={'type': 'file', 'options': {'path': '/tmp/vault.audit.log'}, 'path': 'tmpfile'})
         assert result[0]
 
         # list

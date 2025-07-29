@@ -3,8 +3,8 @@
 from fastmcp import Context
 
 
-def create(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> dict[str, bool]:
-    """create a vault acl policy"""
+def create_update(ctx: Context, name: str, policy: dict[str, dict[str, dict[str, list[str]]]]) -> dict[str, bool]:
+    """create or update a vault acl policy"""
     return {'success': ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy).ok}
 
 

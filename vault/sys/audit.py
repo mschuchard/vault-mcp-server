@@ -3,9 +3,9 @@
 from fastmcp import Context
 
 
-def enable(ctx: Context, type: str, path: str) -> dict[str, bool]:
+def enable(ctx: Context, type: str, path: str | None = None, options: dict | None = None, local: bool | None = None) -> dict[str, bool]:
     """enable a vault audit device"""
-    return {'success': ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path).ok}
+    return {'success': ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path, options=options, local=local).ok}
 
 
 def disable(ctx: Context, path: str) -> dict[str, bool]:

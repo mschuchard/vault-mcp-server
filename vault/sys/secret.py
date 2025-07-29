@@ -3,9 +3,15 @@
 from fastmcp import Context
 
 
-def enable(ctx: Context, engine: str, mount: str | None = None) -> dict[str, bool]:
+def enable(
+    ctx: Context, engine: str, mount: str | None = None, config: dict | None = None, options: dict | None = None, local: bool = False, seal_wrap: bool = False
+) -> dict[str, bool]:
     """enable a vault secret engine"""
-    return {'success': ctx.request_context.lifespan_context['sys'].enable_secrets_engine(backend_type=engine, path=mount).ok}
+    return {
+        'success': ctx.request_context.lifespan_context['sys']
+        .enable_secrets_engine(backend_type=engine, path=mount, config=config, options=options, local=local, seal_wrap=seal_wrap)
+        .ok
+    }
 
 
 def disable(ctx: Context, mount: str) -> dict[str, bool]:

@@ -71,7 +71,7 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=kv2.metadata, name='kv2-metadata-and-versions', annotations=rl_annotations)
     mcp.tool(name_or_fn=kv2.patch, name='kv2-patch', annotations=cu_annotations)
     # policy
-    mcp.tool(name_or_fn=policy.create, name='policy-create', annotations=cu_annotations)
+    mcp.tool(name_or_fn=policy.create_update, name='policy-create-or-update', annotations=cu_annotations)
     mcp.tool(name_or_fn=policy.delete, name='policy-delete', annotations=del_annotations)
     mcp.tool(name_or_fn=policy.read, name='policy-read', annotations=rl_annotations)
     mcp.tool(name_or_fn=policy.list, name='policies-list', annotations=rl_annotations)
