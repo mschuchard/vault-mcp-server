@@ -20,6 +20,12 @@ async def test_transit() -> None:
         result = await client.call_tool(name='transit-engine-encryption-key-create', arguments={'name': 'mykey'})
         assert result[0]
 
+        # update config
+        result = await client.call_tool(
+            name='transit-engine-encryption-key-update-config', arguments={'name': 'mykey', 'deletion_allowed': True, 'exportable': True}
+        )
+        assert result[0]
+
         # read
         result = await client.call_tool(name='transit-engine-encryption-key-read', arguments={'name': 'mykey'})
         assert result[0]
@@ -44,6 +50,6 @@ async def test_transit() -> None:
         result = await client.call_tool(name='transit-engine-generate-random-bytes', arguments={'num_bytes': 16})
         assert result[0]
 
-        # delete: TODO when functionality expanded for `create` then configure key that is deletable, and re-add this test
-        # result = await client.call_tool(name='transit-engine-encryption-key-delete', arguments={'name': 'mykey'})
-        # assert result[0]
+        # delete
+        result = await client.call_tool(name='transit-engine-encryption-key-delete', arguments={'name': 'mykey'})
+        assert result[0]

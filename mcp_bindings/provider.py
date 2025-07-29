@@ -81,6 +81,7 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=secret.list, name='secret-engines-list', annotations=rl_annotations)
     # transit
     mcp.tool(name_or_fn=transit.create, name='transit-engine-encryption-key-create', annotations=cu_annotations)
+    mcp.tool(name_or_fn=transit.update_config, name='transit-engine-encryption-key-update-config', annotations=cu_annotations)
     mcp.tool(name_or_fn=transit.read, name='transit-engine-encryption-key-read', annotations=rl_annotations)
     mcp.tool(name_or_fn=transit.list, name='transit-engine-encryption-keys-list', annotations=rl_annotations)
     mcp.tool(name_or_fn=transit.delete, name='transit-engine-encryption-key-delete', annotations=del_annotations)

@@ -11,6 +11,6 @@ from tests import utils
 async def test_provider() -> None:
     async with utils.mcp_client() as client:
         tools = await client.list_tools()
-        assert len(tools) == 27
+        assert len(tools) == 28
         resources: list[Resource] = await client.list_resources()
         assert len(resources) == 4

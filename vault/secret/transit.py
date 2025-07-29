@@ -21,6 +21,15 @@ def create(
     )['data']
 
 
+def update_config(
+    ctx: Context, name: str, deletion_allowed: bool | None = None, exportable: bool | None = None, mount: str = 'transit', auto_rotate_period: str | None = None
+) -> dict:
+    """update the configuration of a transit encryption key in vault"""
+    return ctx.request_context.lifespan_context['transit'].update_key_configuration(
+        name=name, deletion_allowed=deletion_allowed, exportable=exportable, mount_point=mount, auto_rotate_period=auto_rotate_period
+    )['data']
+
+
 async def read(ctx: Context, name: str, mount: str = 'transit') -> dict:
     """read a transit encryption key from vault"""
     return ctx.request_context.lifespan_context['transit'].read_key(name=name, mount_point=mount)['data']
@@ -54,7 +63,9 @@ def encrypt(ctx: Context, name: str, text: str, mount: str = 'transit', context:
 def decrypt(ctx: Context, name: str, text: str, mount: str = 'transit', context: str | None = None) -> str:
     """decrypt ciphertext with a vault transit encryption key"""
     return base64.b64decode(
-        ctx.request_context.lifespan_context['transit'].decrypt_data(name=name, ciphertext=text, mount_point=mount)['data']['plaintext'].encode()
+        ctx.request_context.lifespan_context['transit']
+        .decrypt_data(name=name, ciphertext=text, mount_point=mount, context=context)['data']['plaintext']
+        .encode()
     ).decode()
 
 
