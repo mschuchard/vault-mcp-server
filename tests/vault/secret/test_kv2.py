@@ -31,3 +31,7 @@ async def test_kv2() -> None:
         # delete
         result = await client.call_tool(name='kv2-delete', arguments={'path': 'mysecret'})
         assert result[0]
+
+        # undelete
+        result = await client.call_tool(name='kv2-undelete', arguments={'versions': [1], 'path': 'mysecret'})
+        assert result[0]

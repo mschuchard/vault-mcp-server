@@ -66,6 +66,7 @@ def tool_provider(mcp: FastMCP) -> None:
     # kv2
     mcp.tool(name_or_fn=kv2.create_update, name='kv2-create-or-update', annotations=cu_annotations)
     mcp.tool(name_or_fn=kv2.delete, name='kv2-delete', annotations=del_annotations)
+    mcp.tool(name_or_fn=kv2.undelete, name='kv2-undelete', annotations=cu_annotations)
     mcp.tool(name_or_fn=kv2.read, name='kv2-read', annotations=rl_annotations)
     mcp.tool(name_or_fn=kv2.list, name='kv2-list', annotations=rl_annotations)
     mcp.tool(name_or_fn=kv2.metadata, name='kv2-metadata-and-versions', annotations=rl_annotations)

@@ -18,6 +18,11 @@ def delete(ctx: Context, mount: str = 'secret', path: str = '') -> dict[str, boo
     return {'success': ctx.request_context.lifespan_context['kv2'].delete_metadata_and_all_versions(mount_point=mount, path=path).ok}
 
 
+def undelete(ctx: Context, versions: list[int], mount: str = 'secret', path: str = '') -> dict[str, bool]:
+    """undelete a key-value version 2 secret in vault"""
+    return {'success': ctx.request_context.lifespan_context['kv2'].undelete_secret_versions(mount_point=mount, path=path, versions=versions).ok}
+
+
 async def read(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
     """read a key-value version 2 secret from a vault"""
     return ctx.request_context.lifespan_context['kv2'].read_secret_version(mount_point=mount, path=path)['data']['data']
