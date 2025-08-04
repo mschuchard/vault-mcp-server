@@ -3,7 +3,7 @@ bootstrap:
 	@nohup vault server -dev -dev-root-token-id="abcdefghijklmnopqrstuvwxyz09" &
 
 shutdown:
-	@killall vault
+	@killall vault || true
 
 unit: shutdown bootstrap
 	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run pytest
