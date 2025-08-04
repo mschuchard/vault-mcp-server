@@ -10,12 +10,12 @@ async def test_secret() -> None:
     async with utils.mcp_client() as client:
         # enable
         result = await client.call_tool(name='secret-engine-enable', arguments={'engine': 'kubernetes'})
-        assert result[0]
+        assert result.data.get('success') is True
 
         # list
         result = await client.call_tool(name='secret-engines-list')
-        assert result[0]
+        assert len(result.data) > 0
 
         # disable
         result = await client.call_tool(name='secret-engine-disable', arguments={'mount': 'kubernetes'})
-        assert result[0]
+        assert result.data.get('success') is True
