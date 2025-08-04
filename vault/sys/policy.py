@@ -13,7 +13,7 @@ def delete(ctx: Context, name: str) -> dict[str, bool]:
     return {'success': ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name).ok}
 
 
-async def read(ctx: Context, name: str) -> str:
+async def read(ctx: Context, name: str) -> dict[str, str | dict]:
     """read a vault acl policy"""
     return ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name)['data']
 
