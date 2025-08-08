@@ -4,12 +4,12 @@ import pytest
 
 from fastmcp import exceptions
 
-from tests import utils
+from vault_mcp_server import dev
 
 
 @pytest.mark.asyncio
 async def test_transit() -> None:
-    async with utils.mcp_client() as client:
+    async with dev.mcp_client() as client:
         # enable transit
         try:
             await client.call_tool(name='secret-engine-enable', arguments={'engine': 'transit'})

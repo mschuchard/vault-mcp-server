@@ -2,7 +2,7 @@
 
 import pytest
 
-from mcp_bindings import server
+from vault_mcp_server.mcp_bindings import server
 
 
 @pytest.mark.xfail(reason='This test is expected to fail because it prematurely terminates the server before it can be read.')

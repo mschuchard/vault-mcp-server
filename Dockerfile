@@ -1,4 +1,4 @@
-# ref: https://github.com/modelcontextprotocol/servers/blob/main/src/sqlite/Dockerfile
+# ref: https://github.com/modelcontextprotocol/servers/blob/main/src/git/Dockerfile
 # Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
 
@@ -26,13 +26,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM python:3.12-slim-bookworm
 
 WORKDIR /app
- 
-COPY --from=uv --chown=app:app /app/main.py /app/main.py
-COPY --from=uv --chown=app:app /app/vault /app/vault
-COPY --from=uv --chown=app:app /app/mcp_bindings /app/mcp_bindings
+
+#COPY --from=uv /root/.local /root/.local
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-ENTRYPOINT ["python", "/app/main.py"]
+ENTRYPOINT ["mcp-server-vault"]

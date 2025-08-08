@@ -5,7 +5,7 @@ import os
 from hvac import Client
 import pytest
 
-from vault import client
+from vault_mcp_server.vault import client
 
 
 def test_client() -> None:
