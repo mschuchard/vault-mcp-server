@@ -1,9 +1,12 @@
-"""unit test utilities"""
+"""fastmcp dev run issues workarounds"""
 
 from fastmcp import FastMCP, Client
 from fastmcp.client.transports import FastMCPTransport
 
-from mcp_bindings import server, provider
+from vault_mcp_server.mcp_bindings import provider, server
+
+mcp = FastMCP(name='Vault', lifespan=server.server_lifespan)
+provider.provider(mcp)
 
 
 def mcp_client() -> Client[FastMCPTransport]:

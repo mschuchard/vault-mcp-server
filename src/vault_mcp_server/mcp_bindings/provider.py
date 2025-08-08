@@ -3,8 +3,8 @@
 from fastmcp import FastMCP
 from fastmcp.resources import Resource
 
-from vault.secret import kv2, transit
-from vault.sys import audit, auth, policy, secret
+from vault_mcp_server.vault.secret import kv2, transit
+from vault_mcp_server.vault.sys import audit, auth, policy, secret
 
 
 def resource_provider(mcp: FastMCP) -> None:

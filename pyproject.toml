@@ -15,7 +15,9 @@ dev = [
     "pytest-asyncio>=1.0.0",
 ]
 
-[tool.pytest.ini_options]
-pythonpath = [
-  "."
-]
+[project.scripts]
+vault-mcp-server = "vault_mcp_server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

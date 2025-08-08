@@ -7,8 +7,8 @@ from typing import Literal
 from fastmcp import FastMCP
 import hvac
 
-from mcp_bindings import provider
-from vault import client
+from vault_mcp_server.mcp_bindings import provider
+from vault_mcp_server.vault import client
 
 
 @asynccontextmanager

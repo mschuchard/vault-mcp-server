@@ -9,4 +9,4 @@ unit: shutdown bootstrap
 	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run pytest
 
 accept:
-	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run fastmcp dev dev.py
+	VAULT_TOKEN="abcdefghijklmnopqrstuvwxyz09" uv run fastmcp dev src/vault_mcp_server/dev.py
