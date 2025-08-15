@@ -18,4 +18,4 @@ def disable(ctx: Context, path: str) -> dict[str, bool | None]:
 async def list(ctx: Context) -> dict:
     """list enabled vault audit devices"""
     devices: dict = ctx.request_context.lifespan_context['sys'].list_enabled_audit_devices()['data']
-    return devices if len(devices) > 0 else {}
+    return devices if devices else {}

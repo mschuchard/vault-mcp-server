@@ -18,4 +18,4 @@ def disable(ctx: Context, mount: str) -> dict[str, bool | None]:
 async def list(ctx: Context) -> dict:
     """list enabled vault authentication engines"""
     engines: dict = ctx.request_context.lifespan_context['sys'].list_auth_methods()['data']
-    return engines if len(engines) > 0 else {}
+    return engines if engines else {}

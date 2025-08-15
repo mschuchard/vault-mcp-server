@@ -7,7 +7,7 @@ from vault_mcp_server import dev
 
 @pytest.mark.asyncio
 async def test_kv2() -> None:
-    async with dev.mcp_client() as client:
+    async with dev.client as client:
         # create_update
         result = await client.call_tool(name='kv2-create-or-update', arguments={'path': 'mysecret', 'secret': {'foo': 'bar', 'baz': 'bat'}})
         assert result.data.get('version') == 1

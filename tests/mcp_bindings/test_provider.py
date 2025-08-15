@@ -9,7 +9,7 @@ from vault_mcp_server import dev
 
 @pytest.mark.asyncio
 async def test_provider() -> None:
-    async with dev.mcp_client() as client:
+    async with dev.client as client:
         tools = await client.list_tools()
         assert len(tools) == 29
         resources: list[Resource] = await client.list_resources()

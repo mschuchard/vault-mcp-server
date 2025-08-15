@@ -23,4 +23,4 @@ async def read(ctx: Context, name: str) -> dict[str, str | dict]:
 async def list(ctx: Context) -> list[str]:
     """list existing vault acl policies"""
     policies: list[str] = ctx.request_context.lifespan_context['sys'].list_acl_policies()['data']['keys']
-    return policies if len(policies) > 0 else []
+    return policies if policies else []
