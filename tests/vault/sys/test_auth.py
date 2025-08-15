@@ -11,6 +11,7 @@ async def test_auth() -> None:
         # enable
         result = await client.call_tool(name='authentication-engine-enable', arguments={'engine': 'kubernetes'})
         assert result.data.get('success') is True
+        assert result.data.get('error') is None
 
         # list
         result = await client.call_tool(name='authentication-engines-list')
@@ -20,3 +21,4 @@ async def test_auth() -> None:
         # disable
         result = await client.call_tool(name='authentication-engine-disable', arguments={'mount': 'kubernetes'})
         assert result.data.get('success') is True
+        assert result.data.get('error') is None

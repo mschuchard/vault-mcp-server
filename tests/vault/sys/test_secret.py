@@ -11,6 +11,7 @@ async def test_secret() -> None:
         # enable
         result = await client.call_tool(name='secret-engine-enable', arguments={'engine': 'kubernetes'})
         assert result.data.get('success') is True
+        assert result.data.get('error') is None
 
         # list
         result = await client.call_tool(name='secret-engines-list')
@@ -19,3 +20,4 @@ async def test_secret() -> None:
         # disable
         result = await client.call_tool(name='secret-engine-disable', arguments={'mount': 'kubernetes'})
         assert result.data.get('success') is True
+        assert result.data.get('error') is None

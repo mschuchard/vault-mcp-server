@@ -41,7 +41,7 @@ async def metadata(ctx: Context, mount: str = 'secret', path: str = '') -> dict:
     return ctx.request_context.lifespan_context['kv2'].read_secret_metadata(mount_point=mount, path=path)['data']
 
 
-async def patch(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> dict:
+def patch(ctx: Context, mount: str = 'secret', path: str = '', secret: dict = {}) -> dict:
     """update the data of a key-value version 2 secret in vault without overwriting the current secret data"""
     return ctx.request_context.lifespan_context['kv2'].patch(
         mount_point=mount,
