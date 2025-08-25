@@ -3,7 +3,7 @@
 from fastmcp import FastMCP
 from fastmcp.resources import Resource
 
-from vault_mcp_server.vault.secret import kv2, transit
+from vault_mcp_server.vault.secret import kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, secret
 
 
@@ -71,6 +71,8 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=kv2.list, name='kv2-list', annotations=rl_annotations)
     mcp.tool(name_or_fn=kv2.metadata, name='kv2-metadata-and-versions', annotations=rl_annotations)
     mcp.tool(name_or_fn=kv2.patch, name='kv2-patch', annotations=cu_annotations)
+    # pki
+    mcp.tool(name_or_fn=pki.generate_root, name='pki-generate-root', annotations=cu_annotations)
     # policy
     mcp.tool(name_or_fn=policy.create_update, name='policy-create-or-update', annotations=cu_annotations)
     mcp.tool(name_or_fn=policy.delete, name='policy-delete', annotations=del_annotations)

@@ -17,7 +17,13 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
     # construct vault client
     vault_client: hvac.Client = client.client()
     # initialize resources on startup
-    yield {'client': vault_client, 'kv2': vault_client.secrets.kv.v2, 'sys': vault_client.sys, 'transit': vault_client.secrets.transit}
+    yield {
+        'client': vault_client,
+        'kv2': vault_client.secrets.kv.v2,
+        'pki': vault_client.secrets.pki,
+        'sys': vault_client.sys,
+        'transit': vault_client.secrets.transit,
+    }
 
 
 def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
