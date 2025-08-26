@@ -1,6 +1,7 @@
 """vault pki"""
 
 from fastmcp import Context
+import hvac.exceptions
 
 
 def generate_root(ctx: Context, type: str, common_name: str, mount: str = 'pki') -> dict:
@@ -28,14 +29,14 @@ def generate_intermediate(ctx: Context, type: str, common_name: str, mount: str 
     return ctx.request_context.lifespan_context['pki'].generate_intermediate(type=type, common_name=common_name, mount_point=mount)['data']
 
 
-def sign_intermediate_certificate(ctx: Context, certificate: str, mount: str = 'pki') -> dict:
+def sign_intermediate_certificate(ctx: Context, csr: str, common_name: str, mount: str = 'pki') -> dict:
     """sign an intermediate certificate with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].sign_intermediate_certificate(certificate=certificate, mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['pki'].sign_intermediate(csr=csr, common_name=common_name, mount_point=mount)['data']
 
 
-def generate_certificate(ctx: Context, type: str, common_name: str, mount: str = 'pki') -> dict:
+def generate_certificate(ctx: Context, role: str, common_name: str, mount: str = 'pki') -> dict:
     """generate a certificate with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].generate_certificate(type=type, common_name=common_name, mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['pki'].generate_certificate(name=role, common_name=common_name, mount_point=mount)['data']
 
 
 def sign_certificate(ctx: Context, role: str, csr: str, common_name: str, mount: str = 'pki') -> dict:
@@ -61,3 +62,26 @@ def revoke_certificate(ctx: Context, serial: str, mount: str = 'pki') -> dict:
 def tidy_certificates(ctx: Context, mount: str = 'pki') -> dict:
     """cleanup expired certificates with the pki engine in vault"""
     return ctx.request_context.lifespan_context['pki'].tidy_certificates(mount_point=mount)['data']
+
+
+def create_update_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
+    """create or update a role with the pki engine in vault"""
+    return ctx.request_context.lifespan_context['pki'].create_or_update_role(name=name, mount_point=mount)['data']
+
+
+async def list_roles(ctx: Context, mount: str = 'pki') -> list[str]:
+    """list current roles with the pki engine in vault"""
+    try:
+        return ctx.request_context.lifespan_context['pki'].list_roles(mount_point=mount)['data'].get('keys', [])
+    except hvac.exceptions.InvalidPath:
+        return []
+
+
+async def read_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
+    """read a role with the pki engine in vault"""
+    return ctx.request_context.lifespan_context['pki'].read_role(name=name, mount_point=mount)
+
+
+def delete_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
+    """delete a role with the pki engine in vault"""
+    return ctx.request_context.lifespan_context['pki'].delete_role(name=name, mount_point=mount)['data']
