@@ -11,7 +11,7 @@ def generate_root(ctx: Context, type: str, common_name: str, mount: str = 'pki')
 
 def delete_root(ctx: Context, mount: str = 'pki') -> dict:
     """delete the current root ca certificate with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].delete_root(mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['pki'].delete_root(mount_point=mount)
 
 
 async def read_root_certificate(ctx: Context, mount: str = 'pki') -> str:
@@ -45,28 +45,31 @@ def sign_certificate(ctx: Context, role: str, csr: str, common_name: str, mount:
 
 
 async def read_certificate(ctx: Context, serial: str, mount: str = 'pki') -> dict:
-    """read a certificate with the pki engine in vault"""
+    """read a certificate by serial number with the pki engine in vault"""
     return ctx.request_context.lifespan_context['pki'].read_certificate(serial=serial, mount_point=mount)
 
 
-async def list_certificates(ctx: Context, mount: str = 'pki') -> dict:
+async def list_certificates(ctx: Context, mount: str = 'pki') -> list[str]:
     """list current certificates with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].list_certificates(mount_point=mount)
+    try:
+        return ctx.request_context.lifespan_context['pki'].list_certificates(mount_point=mount)['data'].get('keys', [])
+    except hvac.exceptions.InvalidRequest:
+        return []
 
 
-def revoke_certificate(ctx: Context, serial: str, mount: str = 'pki') -> dict:
+def revoke_certificate(ctx: Context, serial_number: str, mount: str = 'pki') -> dict:
     """revoke a certificate with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].revoke_certificate(serial=serial, mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['pki'].revoke_certificate(serial_number=serial_number, mount_point=mount)['data']
 
 
 def tidy_certificates(ctx: Context, mount: str = 'pki') -> dict:
     """cleanup expired certificates with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].tidy_certificates(mount_point=mount)['data']
+    return {'success': ctx.request_context.lifespan_context['pki'].tidy(mount_point=mount).ok}
 
 
-def create_update_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
+def create_update_role(ctx: Context, name: str, extra_params: dict = {}, mount: str = 'pki') -> dict:
     """create or update a role with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].create_or_update_role(name=name, mount_point=mount)['data']
+    return ctx.request_context.lifespan_context['pki'].create_or_update_role(name=name, extra_params=extra_params, mount_point=mount)['data']
 
 
 async def list_roles(ctx: Context, mount: str = 'pki') -> list[str]:
@@ -79,9 +82,9 @@ async def list_roles(ctx: Context, mount: str = 'pki') -> list[str]:
 
 async def read_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
     """read a role with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].read_role(name=name, mount_point=mount)
+    return ctx.request_context.lifespan_context['pki'].read_role(name=name, mount_point=mount)['data']
 
 
 def delete_role(ctx: Context, name: str, mount: str = 'pki') -> dict:
     """delete a role with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].delete_role(name=name, mount_point=mount)['data']
+    return {'success': ctx.request_context.lifespan_context['pki'].delete_role(name=name, mount_point=mount).ok}
