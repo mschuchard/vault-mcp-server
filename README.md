@@ -70,4 +70,5 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
 - Secrets Engines
   - Enable/Disable/List
   - KV Version 2
+  - PKI
   - Transit
