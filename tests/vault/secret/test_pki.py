@@ -52,20 +52,21 @@ async def test_pki() -> None:
 
         # read
         result = await client.call_tool(name='pki-read-root-ca')
-        assert result.data is not None
+        assert 'BEGIN CERTIFICATE' in result.data
 
         result = await client.call_tool(name='pki-read-certificate', arguments={'serial': 'ca'})
-        assert result.data is not None
+        assert result.data.get('certificate') is not None
 
         result = await client.call_tool(name='pki-read-root-ca-chain')
-        assert result.data is not None
+        assert 'BEGIN CERTIFICATE' in result.data
 
         result = await client.call_tool(name='pki-read-role', arguments={'name': role})
         assert result.data.get('use_pss') is not None
 
         # delete
         result = await client.call_tool(name='pki-delete-root-ca', arguments={})
-        assert result.data is not None
+        assert result.data['data'] is None
+        assert result.data.get('mount_type') == 'pki'
 
         result = await client.call_tool(name='pki-revoke-certificate', arguments={'serial_number': last_cert})
         assert result.data.get('revocation_time') is not None

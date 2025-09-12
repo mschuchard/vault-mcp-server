@@ -46,7 +46,7 @@ def sign_certificate(ctx: Context, role: str, csr: str, common_name: str, mount:
 
 async def read_certificate(ctx: Context, serial: str, mount: str = 'pki') -> dict:
     """read a certificate by serial number with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].read_certificate(serial=serial, mount_point=mount)
+    return ctx.request_context.lifespan_context['pki'].read_certificate(serial=serial, mount_point=mount)['data']
 
 
 async def list_certificates(ctx: Context, mount: str = 'pki') -> list[str]:
