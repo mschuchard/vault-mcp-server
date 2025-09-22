@@ -77,7 +77,7 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=kv2.undelete, name='kv2-undelete', annotations=cu_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.read, name='kv2-read', annotations=rl_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.list, name='kv2-list', annotations=rl_annotations, tags=['key-value-v2'])
-    mcp.tool(name_or_fn=kv2.metadata, name='kv2-metadata-and-versions', annotations=rl_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.read_secret_metadata, name='kv2-metadata-and-versions', annotations=rl_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.patch, name='kv2-patch', annotations=cu_annotations, tags=['key-value-v2'])
     # pki
     mcp.tool(name_or_fn=pki.generate_root, name='pki-generate-root-ca', annotations=cu_annotations, tags=['pki'])
