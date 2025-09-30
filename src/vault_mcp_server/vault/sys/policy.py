@@ -29,3 +29,8 @@ async def list(ctx: Context) -> list[str]:
     """list existing vault acl policies"""
     policies: list[str] = ctx.request_context.lifespan_context['sys'].list_acl_policies()['data']['keys']
     return policies if policies else []
+
+
+def example_policy() -> 'dict[str, dict[str, dict[str, list[str]]]]':
+    """display an example vault acl policy"""
+    return {'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}}

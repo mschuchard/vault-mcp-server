@@ -29,7 +29,11 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
 def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
     """load and execute fastmcp server"""
     # initialize fastmcp object
-    mcp: FastMCP = FastMCP(name='Vault', lifespan=server_lifespan)
+    mcp: FastMCP = FastMCP(
+        name='Vault',
+        instructions='This server facilitates interfacing and interactions with a Vault server. It provides tools for interacting with the secrets engines, and the system backends for authentication and authorization.',
+        lifespan=server_lifespan,
+    )
     # load integrations
     provider.provider(mcp)
     # run mcp server

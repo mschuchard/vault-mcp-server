@@ -2,6 +2,7 @@
 
 from fastmcp import FastMCP
 from fastmcp.resources import Resource
+from fastmcp.prompts import Prompt
 
 from vault_mcp_server.vault.secret import kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, secret
@@ -117,7 +118,19 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=transit.generate, name='transit-engine-generate-random-bytes', annotations=cu_annotations, tags=['transit'])
 
 
+def prompt_provider(mcp: FastMCP) -> None:
+    """define implemented prompt integrations"""
+    mcp.add_prompt(
+        Prompt.from_function(
+            fn=policy.example_policy,
+            name='example-acl-policy',
+            tags=['acl-policy'],
+        )
+    )
+
+
 def provider(mcp: FastMCP) -> None:
     """define implemented integrations"""
     resource_provider(mcp)
     tool_provider(mcp)
+    prompt_provider(mcp)
