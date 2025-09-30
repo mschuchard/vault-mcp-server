@@ -1,13 +1,14 @@
 """vault kv2"""
 
 from typing import Annotated
+
 from fastmcp import Context
 import hvac.exceptions
 
 
 def create_update(
     ctx: Context,
-    mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
+    mount: Annotated[str, 'The "path" the key-value version 2 secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secrets to create/update.'] = '',
     secret: Annotated[
         dict,
