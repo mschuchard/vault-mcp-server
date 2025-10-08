@@ -2,7 +2,7 @@
 
 import pytest
 
-from mcp.types import Resource
+from mcp.types import Resource, Prompt, Tool
 
 from vault_mcp_server import dev
 
@@ -10,7 +10,9 @@ from vault_mcp_server import dev
 @pytest.mark.asyncio
 async def test_provider() -> None:
     async with dev.client as client:
-        tools = await client.list_tools()
+        tools: list[Tool] = await client.list_tools()
         assert len(tools) == 45
         resources: list[Resource] = await client.list_resources()
         assert len(resources) == 4
+        prompts: list[Prompt] = await client.list_prompts()
+        assert len(prompts) == 1

@@ -1,6 +1,7 @@
 """test vault policy mcp integrations"""
 
 import pytest
+import json
 
 from vault_mcp_server import dev
 
@@ -25,3 +26,7 @@ async def test_policy() -> None:
         result = await client.call_tool(name='policy-delete', arguments={'name': 'mypolicy'})
         assert result.data.get('success') is True
         assert result.data.get('error') is None
+
+        # example
+        result = await client.get_prompt(name='example-acl-policy')
+        assert len(result.messages[0].content.text) > 0
