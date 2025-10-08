@@ -64,6 +64,14 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
 ```
 
 ## Features
+
+### Resources
+- Current Enabled ACL Policies
+- Current Enabled Audit Devices
+- Current Enabled Authentication Engines
+- Current Enabled Secret Engines
+
+### Tools
 - ACL Policies
 - Audit Devices
 - Authentication Engine: Enable/Disable/List
@@ -72,3 +80,6 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
   - KV Version 2
   - PKI
   - Transit
+
+### Prompts
+- mcp.vault.example-acl-policy: This displays an example Vault ACL Policy in JSON string format. The displayed policy can be modified and entered as-is to the LLM (verified with Claude), and it will understand that you want to create an ACL Policy with your modified content (with an auto-generated name). However, it is probably more prudent to use it as an input to the tool instead.

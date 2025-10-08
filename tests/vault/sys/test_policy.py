@@ -1,7 +1,6 @@
 """test vault policy mcp integrations"""
 
 import pytest
-import json
 
 from vault_mcp_server import dev
 
