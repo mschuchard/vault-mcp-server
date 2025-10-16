@@ -31,6 +31,20 @@ async def list(ctx: Context) -> list[str]:
     return policies if policies else []
 
 
-def example_policy() -> 'dict[str, dict[str, dict[str, list[str]]]]':
+async def example_policy() -> 'dict[str, dict[str, dict[str, list[str]]]]':
     """display an example vault acl policy"""
     return {'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}}
+
+
+async def generate_policy(
+    paths: Annotated['list[str]', 'The list of Vault access paths to include in the generated policy.'],
+) -> 'dict[str, dict[str, dict[str, list[str]]]]':
+    """generate a vault acl policy example with input paths"""
+    # initialize policy dictionary
+    policy: dict[str, dict[str, dict[str, list[str]]]] = {'path': {}}
+
+    # iterate through paths and attach example capabilities
+    for path in paths:
+        policy['path'][path] = {'capabilities': ['read', 'list']}
+
+    return policy
