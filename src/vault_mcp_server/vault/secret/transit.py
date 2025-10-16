@@ -10,7 +10,7 @@ import hvac.exceptions
 def create(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to create.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
     type: Annotated[str | None, 'Specifies the type of encryption key to create.'] = None,
     convergent_encryption: Annotated[
         bool | None,
@@ -35,7 +35,7 @@ def update_config(
     exportable: Annotated[
         bool | None, 'Enables keys to be exportable. This allows for all the valid keys in the key ring to be exported. Once set, this cannot be disabled.'
     ] = None,
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
     auto_rotate_period: Annotated[str | None, 'The period at which this key should be rotated automatically.'] = None,
 ) -> dict:
     """update the configuration of a transit encryption key in vault"""
@@ -47,13 +47,13 @@ def update_config(
 async def read(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to read.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
 ) -> dict:
     """read a transit encryption key from vault"""
     return ctx.request_context.lifespan_context['transit'].read_key(name=name, mount_point=mount)['data']
 
 
-async def list(ctx: Context, mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit') -> list:
+async def list(ctx: Context, mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit') -> list:
     """list the transit encryption keys in vault"""
     try:
         return ctx.request_context.lifespan_context['transit'].list_keys(mount_point=mount)['data'].get('keys', [])
@@ -64,7 +64,7 @@ async def list(ctx: Context, mount: Annotated[str, 'The “path” the transit e
 def delete(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to delete.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
 ) -> dict[str, bool]:
     """delete a transit encryption key from vault"""
     return {'success': ctx.request_context.lifespan_context['transit'].delete_key(name=name, mount_point=mount).ok}
@@ -73,7 +73,7 @@ def delete(
 def rotate(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to rotate.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
 ) -> dict:
     """rotate a transit encryption key in vault"""
     return ctx.request_context.lifespan_context['transit'].rotate_key(name=name, mount_point=mount)['data']
@@ -83,7 +83,7 @@ def encrypt(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to encrypt against.'],
     text: Annotated[str, 'Specifies plaintext to be encoded.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
     context: Annotated[
         str | None, 'Specifies the base64 encoded context for key derivation. This is required if key derivation is enabled for this key.'
     ] = None,
@@ -102,7 +102,7 @@ def decrypt(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the encryption key to decrypt against.'],
     text: Annotated[str, 'The ciphertext to decrypt.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
     context: Annotated[str | None, 'Specifies the base64 encoded context for key derivation. This is required if key derivation is enabled.'] = None,
 ) -> str:
     """decrypt ciphertext with a vault transit encryption key"""
@@ -116,7 +116,7 @@ def decrypt(
 def generate(
     ctx: Context,
     num_bytes: Annotated[int, 'Specifies the number of bytes to return.'],
-    mount: Annotated[str, 'The “path” the transit engine was mounted on.'] = 'transit',
+    mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit',
 ) -> str:
     """generate random bytes through the vault transit engine"""
     return ctx.request_context.lifespan_context['transit'].generate_random_bytes(n_bytes=num_bytes, mount_point=mount)['data']['random_bytes']

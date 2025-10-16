@@ -1,10 +1,12 @@
 """vault pki"""
 
+from typing import Literal
+
 from fastmcp import Context
 import hvac.exceptions
 
 
-def generate_root(ctx: Context, type: str, common_name: str, mount: str = 'pki') -> dict:
+def generate_root(ctx: Context, type: Literal['exported', 'internal', 'kms'], common_name: str, mount: str = 'pki') -> dict:
     """generate a root ca certificate with the pki engine in vault"""
     return ctx.request_context.lifespan_context['pki'].generate_root(type=type, common_name=common_name, mount_point=mount)['data']
 
@@ -24,7 +26,7 @@ async def read_root_certificate_chain(ctx: Context, mount: str = 'pki') -> str:
     return ctx.request_context.lifespan_context['pki'].read_ca_certificate_chain(mount_point=mount)
 
 
-def generate_intermediate(ctx: Context, type: str, common_name: str, mount: str = 'pki') -> dict:
+def generate_intermediate(ctx: Context, type: Literal['exported', 'internal', 'kms'], common_name: str, mount: str = 'pki') -> dict:
     """generate an intermediate certificate with the pki engine in vault"""
     return ctx.request_context.lifespan_context['pki'].generate_intermediate(type=type, common_name=common_name, mount_point=mount)['data']
 
