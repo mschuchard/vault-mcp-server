@@ -29,3 +29,11 @@ async def test_policy() -> None:
         # example
         result = await client.get_prompt(name='example-acl-policy')
         assert len(result.messages[0].content.text) > 0
+        assert 'secret/data/my-app/*' in result.messages[0].content.text
+        assert 'secret/metadata/my-app/*' in result.messages[0].content.text
+
+        # generate
+        result = await client.get_prompt(name='generate-acl-policy', arguments={'paths': ['secret/data/my-app/*', 'secret/metadata/my-app/*']})
+        assert len(result.messages[0].content.text) > 0
+        assert 'secret/data/my-app/*' in result.messages[0].content.text
+        assert 'secret/metadata/my-app/*' in result.messages[0].content.text
