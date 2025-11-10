@@ -4,7 +4,7 @@ from fastmcp import FastMCP
 from fastmcp.resources import Resource
 from fastmcp.prompts import Prompt
 
-from vault_mcp_server.vault.secret import kv2, pki, transit
+from vault_mcp_server.vault.secret import database, kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, secret
 
 
@@ -72,6 +72,23 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=auth.enable, name='authentication-engine-enable', annotations=cu_annotations, tags=['authentication'])
     mcp.tool(name_or_fn=auth.disable, name='authentication-engine-disable', annotations=del_annotations, tags=['authentication'])
     mcp.tool(name_or_fn=auth.list, name='authentication-engines-list', annotations=rl_annotations, tags=['authentication'])
+    # database
+    mcp.tool(name_or_fn=database.read_connection, name='database-connection-read', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.list_connections, name='database-connections-list', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.delete_connection, name='database-connection-delete', annotations=del_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.reset_connection, name='database-connection-reset', annotations=cu_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.rotate_root_credentials, name='database-connection-rotate-root', annotations=cu_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.create_role, name='database-role-create', annotations=cu_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.read_role, name='database-role-read', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.list_roles, name='database-roles-list', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.delete_role, name='database-role-delete', annotations=del_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.generate_credentials, name='database-credentials-generate', annotations=cu_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.create_static_role, name='database-static-role-create', annotations=cu_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.read_static_role, name='database-static-role-read', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.list_static_roles, name='database-static-roles-list', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.delete_static_role, name='database-static-role-delete', annotations=del_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.get_static_credentials, name='database-static-credentials-get', annotations=rl_annotations, tags=['database'])
+    mcp.tool(name_or_fn=database.rotate_static_role_credentials, name='database-static-credentials-rotate', annotations=cu_annotations, tags=['database'])
     # kv2
     mcp.tool(name_or_fn=kv2.create_update, name='kv2-create-or-update', annotations=cu_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.delete, name='kv2-delete', annotations=del_annotations, tags=['key-value-v2'])

@@ -77,6 +77,7 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
 - Authentication Engine: Enable/Disable/List
 - Secrets Engines
   - Enable/Disable/List
+  - Database (Beta)
   - KV Version 2
   - PKI
   - Transit
