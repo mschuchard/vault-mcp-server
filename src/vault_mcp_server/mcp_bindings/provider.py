@@ -97,6 +97,12 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=kv2.list, name='kv2-list', annotations=rl_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.read_secret_metadata, name='kv2-metadata-and-versions', annotations=rl_annotations, tags=['key-value-v2'])
     mcp.tool(name_or_fn=kv2.patch, name='kv2-patch', annotations=cu_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.configure, name='kv2-configure-backend', annotations=cu_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.read_configuration, name='kv2-read-backend-configuration', annotations=rl_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.delete_latest_version_of_secret, name='kv2-delete-latest-version', annotations=del_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.delete_secret_versions, name='kv2-delete-specific-versions', annotations=del_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.destroy, name='kv2-destroy-versions', annotations=del_annotations, tags=['key-value-v2'])
+    mcp.tool(name_or_fn=kv2.update_metadata, name='kv2-update-metadata', annotations=cu_annotations, tags=['key-value-v2'])
     # pki
     mcp.tool(name_or_fn=pki.generate_root, name='pki-generate-root-ca', annotations=cu_annotations, tags=['pki'])
     mcp.tool(name_or_fn=pki.delete_root, name='pki-delete-root-ca', annotations=del_annotations, tags=['pki'])
