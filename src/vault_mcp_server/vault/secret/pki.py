@@ -164,18 +164,11 @@ async def read_urls(ctx: Context, mount: Annotated[str, 'The "path" the method/b
 
 def set_urls(
     ctx: Context,
-    issuing_certificates: Annotated[list[str] | None, 'The URL values for the Issuing Certificate field.'] = None,
-    crl_distribution_points: Annotated[list[str] | None, 'The URL values for the CRL Distribution Points field.'] = None,
-    ocsp_servers: Annotated[list[str] | None, 'The URL values for the OCSP Servers field.'] = None,
+    params: Annotated[dict, 'Dictionary containing URL configuration (issuing_certificates, crl_distribution_points, ocsp_servers).'],
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """set the URL configuration with the pki engine in vault"""
-    return ctx.request_context.lifespan_context['pki'].set_urls(
-        issuing_certificates=issuing_certificates,
-        crl_distribution_points=crl_distribution_points,
-        ocsp_servers=ocsp_servers,
-        mount_point=mount,
-    )
+    return ctx.request_context.lifespan_context['pki'].set_urls(params=params, mount_point=mount)
 
 
 def submit_ca_information(
