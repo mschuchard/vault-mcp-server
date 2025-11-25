@@ -87,7 +87,7 @@ async def read(
     return ctx.request_context.lifespan_context['transit'].read_key(name=name, mount_point=mount)['data']
 
 
-async def list(ctx: Context, mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit') -> list:
+async def list_(ctx: Context, mount: Annotated[str, 'The "path" the transit engine was mounted on.'] = 'transit') -> list:
     """list the transit encryption keys in vault"""
     try:
         return ctx.request_context.lifespan_context['transit'].list_keys(mount_point=mount)['data'].get('keys', [])

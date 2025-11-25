@@ -25,7 +25,7 @@ async def read(ctx: Context, name: Annotated[str, 'The name of the acl policy to
     return ctx.request_context.lifespan_context['sys'].read_acl_policy(name=name)['data']
 
 
-async def list(ctx: Context) -> list[str]:
+async def list_(ctx: Context) -> list[str]:
     """list existing vault acl policies"""
     policies: list[str] = ctx.request_context.lifespan_context['sys'].list_acl_policies()['data']['keys']
     return policies if policies else []

@@ -156,7 +156,7 @@ def destroy(
     }
 
 
-async def list(
+async def list_(
     ctx: Context,
     mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secrets to list.'] = '',

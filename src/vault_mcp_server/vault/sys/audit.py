@@ -22,7 +22,7 @@ def disable(ctx: Context, path: Annotated[str, 'Specifies the path of the audit 
     return {'success': result.ok, 'error': result.error if not result.ok else None}
 
 
-async def list(ctx: Context) -> dict:
+async def list_(ctx: Context) -> dict:
     """list enabled vault audit devices"""
     devices: dict = ctx.request_context.lifespan_context['sys'].list_enabled_audit_devices()['data']
     return devices if devices else {}

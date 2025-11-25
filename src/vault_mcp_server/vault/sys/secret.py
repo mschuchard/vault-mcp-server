@@ -31,7 +31,7 @@ def disable(
     return {'success': result.ok, 'error': result.error if not result.ok else None}
 
 
-async def list(ctx: Context) -> dict:
+async def list_(ctx: Context) -> dict:
     """list enabled vault secret engines"""
     engines: dict = ctx.request_context.lifespan_context['sys'].list_mounted_secrets_engines()['data']
     return engines if engines else {}
