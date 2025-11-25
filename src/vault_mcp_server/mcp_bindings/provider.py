@@ -24,7 +24,7 @@ def resource_provider(mcp: FastMCP) -> None:
     )
     mcp.add_resource(
         Resource.from_function(
-            fn=auth.list,
+            fn=auth.list_,
             uri='auth://engines',
             name='enabled-authentication-engines',
             description='List the available enabled Vault authentication engines',
@@ -71,7 +71,9 @@ def tool_provider(mcp: FastMCP) -> None:
     # auth
     mcp.tool(name_or_fn=auth.enable, name='authentication-engine-enable', annotations=cu_annotations, tags=['authentication'])
     mcp.tool(name_or_fn=auth.disable, name='authentication-engine-disable', annotations=del_annotations, tags=['authentication'])
-    mcp.tool(name_or_fn=auth.list, name='authentication-engines-list', annotations=rl_annotations, tags=['authentication'])
+    mcp.tool(name_or_fn=auth.list_, name='authentication-engines-list', annotations=rl_annotations, tags=['authentication'])
+    mcp.tool(name_or_fn=auth.read, name='authentication-engine-read', annotations=rl_annotations, tags=['authentication'])
+    mcp.tool(name_or_fn=auth.tune, name='authentication-engine-tune', annotations=cu_annotations, tags=['authentication'])
     # database
     mcp.tool(name_or_fn=database.read_connection, name='database-connection-read', annotations=rl_annotations, tags=['database'])
     mcp.tool(name_or_fn=database.list_connections, name='database-connections-list', annotations=rl_annotations, tags=['database'])
