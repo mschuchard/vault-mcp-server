@@ -7,10 +7,11 @@ from fastmcp import Context
 def create_update(
     ctx: Context,
     name: Annotated[str, 'Specifies the name of the policy to create.'],
-    policy: Annotated[dict[str, dict[str, dict[str, list[str]]]], 'Specifies the policy to create or update.'],
+    policy: Annotated[str | dict[str, dict[str, dict[str, list[str]]]], 'Specifies the policy document. Can be a string (HCL) or dict (JSON).'],
+    pretty_print: Annotated[bool, 'If True and policy is a dict, send JSON with pretty formatting.'] = True,
 ) -> dict[str, bool | None]:
     """create or update a vault acl policy"""
-    result = ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy)
+    result = ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy, pretty_print=pretty_print)
     return {'success': result.ok, 'error': result.error if not result.ok else None}
 
 

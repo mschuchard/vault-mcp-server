@@ -8,11 +8,12 @@ def enable(
     ctx: Context,
     type: Annotated[str, 'Specifies the type of the audit device.'],
     path: Annotated[str | None, 'Specifies the path in which to enable the audit device.'] = None,
+    description: Annotated[str | None, 'Human-friendly description of the audit device.'] = None,
     options: Annotated[dict | None, 'Configuration options to pass to the audit device itself. This is dependent on the audit device type.'] = None,
     local: Annotated[bool | None, 'Specifies if the audit device is a local only.'] = None,
 ) -> dict[str, bool | None]:
     """enable a vault audit device"""
-    result = ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, path=path, options=options, local=local)
+    result = ctx.request_context.lifespan_context['sys'].enable_audit_device(device_type=type, description=description, path=path, options=options, local=local)
     return {'success': result.ok, 'error': result.error if not result.ok else None}
 
 
