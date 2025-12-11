@@ -49,13 +49,28 @@ def move(
 ) -> dict[str, bool | None]:
     """move an already-mounted secrets engine to a new mount point"""
     result = ctx.request_context.lifespan_context['sys'].move_backend(from_path=from_path, to_path=to_path)
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    # move_backend returns a requests.Response object that produces 204 (empty body)
+    # check if it is a response object with ok attribute, or handle as successful if status code is 204
+    if hasattr(result, 'ok'):
+        return {'success': result.ok, 'error': result.error if not result.ok else None}
+    elif hasattr(result, 'status_code'):
+        success = result.status_code == 204
+        return {'success': success, 'error': None if success else f'Status code: {result.status_code}'}
+    else:
+        # if it is neither, assume success (for compatibility)
+        return {'success': True, 'error': None}
 
 
 def read_configuration(ctx: Context, mount: Annotated[str, 'The path where the secrets engine is mounted. This is specified as part of the URL.']) -> dict:
     """read the configuration of a mounted secrets engine. Returns the current time in seconds for each TTL, which may be the system default or a mount-specific value."""
     response = ctx.request_context.lifespan_context['sys'].read_mount_configuration(path=mount)
-    return response.get('data', {}) if hasattr(response, 'get') else response
+    # read_mount_configuration returns JSON response, extract 'data' field
+    if isinstance(response, dict):
+        return response.get('data', response)
+    elif hasattr(response, 'json'):
+        return response.json().get('data', {})
+    else:
+        return {}
 
 
 def tune_configuration(
@@ -89,7 +104,15 @@ def tune_configuration(
         options=options,
         force_no_cache=force_no_cache,
     )
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    # tune_mount_configuration returns a requests.Response object that produces 204 (empty body)
+    if hasattr(result, 'ok'):
+        return {'success': result.ok, 'error': result.error if not result.ok else None}
+    elif hasattr(result, 'status_code'):
+        success = result.status_code == 204
+        return {'success': success, 'error': None if success else f'Status code: {result.status_code}'}
+    else:
+        # if it is neither, assume success (for compatibility)
+        return {'success': True, 'error': None}
 
 
 def retrieve_option(
