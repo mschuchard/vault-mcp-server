@@ -1,6 +1,7 @@
 """vault client"""
 
 import os
+import re
 import urllib.parse
 
 import hvac
@@ -19,8 +20,8 @@ def client() -> hvac.Client:
     # assign token value
     token: str = os.getenv('VAULT_TOKEN', '')
     # validate token value
-    if len(token) != 28:
-        raise ValueError('invalid token')
+    if not re.match(r'^[a-zA-Z0-9.]+$', token):
+        raise ValueError('invalid token format')
 
     # construct and validate client
     client: hvac.Client = hvac.Client(url=url, token=token)

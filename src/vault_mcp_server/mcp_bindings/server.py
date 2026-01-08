@@ -19,6 +19,7 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
     # initialize resources on startup
     yield {
         'client': vault_client,
+        'database': vault_client.secrets.database,
         'kv2': vault_client.secrets.kv.v2,
         'pki': vault_client.secrets.pki,
         'sys': vault_client.sys,

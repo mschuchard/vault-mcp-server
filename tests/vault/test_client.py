@@ -24,7 +24,7 @@ def test_client() -> None:
 
 def test_client_errors() -> None:
     # bad token
-    os.environ['VAULT_TOKEN'] = 'short_token'
+    os.environ['VAULT_TOKEN'] = 'abcd1234!'
     with pytest.raises(ValueError, match='invalid token'):
         client.client()
 

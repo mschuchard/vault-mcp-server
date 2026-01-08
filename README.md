@@ -72,11 +72,12 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
 - Current Enabled Secret Engines
 
 ### Tools
-- ACL Policies
-- Audit Devices
-- Authentication Engine: Enable/Disable/List
-- Secrets Engines
-  - Enable/Disable/List
+- System Backend
+  - ACL Policies
+  - Audit Devices
+  - Authentication Engines
+  - Secrets Engines
+- Secrets Backend
   - Database (Beta)
   - KV Version 2
   - PKI
