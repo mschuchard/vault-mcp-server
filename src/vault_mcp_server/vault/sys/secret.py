@@ -55,7 +55,7 @@ def move(
         return {'success': result.ok, 'error': result.error if not result.ok else None}
     elif hasattr(result, 'status_code'):
         success = result.status_code == 204
-        return {'success': success, 'error': None if success else f'Status code: {result.status_code}'}
+        return {'success': success, 'error': None if success else f'Unexpected status code: {result.status_code}. Response: {result.text}'}
     else:
         # if it is neither, assume success (for compatibility)
         return {'success': True, 'error': None}
