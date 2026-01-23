@@ -3,6 +3,7 @@
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 from typing import Literal
+import os
 
 from fastmcp import FastMCP
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware, CallToolSettings, ListToolsSettings, ReadResourceSettings
@@ -43,19 +44,20 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
     )
 
     # add response caching middleware
+    cache_ttl: int = int(os.getenv('CACHE_TTL', '60'))
     mcp.add_middleware(
         ResponseCachingMiddleware(
-            # Cache list operations
-            list_tools_settings=ListToolsSettings(ttl=60),
-            list_resources_settings=ListToolsSettings(ttl=60),
-            # Cache all read-only tool calls (using annotation filter)
+            # cache list operations
+            list_tools_settings=ListToolsSettings(ttl=cache_ttl),
+            list_resources_settings=ListToolsSettings(ttl=cache_ttl),
+            # cache all read-only tool calls (using annotation filter)
             call_tool_settings=CallToolSettings(
                 ttl=30,
                 # This lambda checks if the tool has readOnlyHint annotation
                 should_cache=lambda name, args, tool_info: (tool_info.get('annotations', {}).get('readOnlyHint', False)),
             ),
-            # Cache resource reads
-            read_resource_settings=ReadResourceSettings(ttl=60),
+            # cache resource reads
+            read_resource_settings=ReadResourceSettings(ttl=cache_ttl),
         )
     )
 

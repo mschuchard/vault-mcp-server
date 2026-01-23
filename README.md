@@ -24,11 +24,14 @@ These can hopefully be extrapolated and modified to fit other clients if you wan
         "VAULT_URL",
         "-e",
         "VAULT_TOKEN",
+        "-e",
+        "CACHE_TTL",
         "matthewschuchard/vault-mcp-server"
       ],
       "env": {
         "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
-        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>"
+        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>",
+        "CACHE_TTL": "<CACHE TTL FOR READ/LIST OPERATIONS>"
       }
     }
   }
@@ -52,16 +55,21 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
         "VAULT_URL",
         "-e",
         "VAULT_TOKEN",
+        "-e",
+        "CACHE_TTL",
         "matthewschuchard/vault-mcp-server"
       ],
       "env": {
         "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
-        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>"
+        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>",
+        "CACHE_TTL": "<CACHE TTL FOR READ/LIST OPERATIONS>"
       }
     }
   }
 }
 ```
+
+Note that `CACHE_TTL` is an optional environment variable that establishes the cache time for all read and list operations before new value(s) are retrieved instead of using the cached value. The default value is sixty (60) seconds.
 
 ## Features
 
