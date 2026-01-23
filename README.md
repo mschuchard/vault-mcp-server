@@ -84,5 +84,5 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
   - Transit
 
 ### Prompts
-- mcp.vault.example-acl-policy: This displays an example Vault ACL Policy in JSON string format. The displayed policy can be modified and entered as-is to the LLM (verified with Claude), and it will understand that you want to create an ACL Policy with your modified content (with an auto-generated name). However, it is probably more prudent to use it as an input to the tool instead.
+- mcp.vault.example-acl-policy: This displays an example Vault ACL Policy in JSON string format. The displayed policy can be modified and entered as-is to the LLM (verified with Claude), and it will understand that you want to create an ACL Policy through the Vault MCP Server with your modified content (with an auto-generated name). However, it is probably more prudent to use it as an input to the tool instead.
 - mcp.vault.generate-acl-policy: This displays a pseudo-example Vault ACL Policy in JSON string format similar to the above prompt. The primary difference is that this prompt accepts a `paths` argument in `list[str]` type format, and the returned policy will contain the input paths. However, the `capabilities` will still be boilerplate, and need to be modified for your usage.
