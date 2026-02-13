@@ -176,6 +176,13 @@ def prompt_provider(mcp: FastMCP) -> None:
             tags=['acl-policy'],
         )
     )
+    mcp.add_prompt(
+        Prompt.from_function(
+            fn=policy.generate_smart_policy,
+            name='generate-smart-acl-policy',
+            tags=['acl-policy'],
+        )
+    )
 
 
 def provider(mcp: FastMCP) -> None:

@@ -37,3 +37,10 @@ async def test_policy() -> None:
         assert len(result.messages[0].content.text) > 0
         assert 'secret/data/my-app/*' in result.messages[0].content.text
         assert 'secret/metadata/my-app/*' in result.messages[0].content.text
+
+        # smart generator
+        result = await client.get_prompt(name='generate-smart-acl-policy', arguments={'description': 'database read access for CI/CD'})
+        assert len(result.messages[0].content.text) > 0
+        assert 'database read access for CI/CD' in result.messages[0].content.text
+        assert 'enabled-secret-engines' in result.messages[0].content.text
+        assert 'least-privilege' in result.messages[0].content.text
