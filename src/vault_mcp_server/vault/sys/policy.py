@@ -3,6 +3,8 @@
 from typing import Annotated, List
 from fastmcp import Context
 
+from vault_mcp_server.vault.sys import auth, secret
+
 
 def create_update(
     ctx: Context,
@@ -51,34 +53,33 @@ async def generate_policy(
     return policy
 
 
-# In src/vault_mcp_server/vault/sys/policy.py
-
-
 async def generate_smart_policy(
+    ctx: Context,
     description: Annotated[str, 'Natural language description of what this policy should allow'],
 ) -> str:
     """Generate a context-aware Vault ACL policy prompt with current Vault state"""
+    if not description.strip():
+        raise ValueError('description must not be empty')
+
+    policies: list[str] = await list_(ctx)
+    secret_engines: dict = await secret.list_(ctx)
+    auth_engines: dict = await auth.list_(ctx)
 
     return f"""Generate a Vault ACL policy for: {description}
 
-To create an appropriate policy, first check the current Vault configuration:
-1. Read the 'enabled-secret-engines' resource to see what's mounted
-2. Read the 'configured-acl-policies' resource to see existing policy patterns
-3. Consider the 'enabled-authentication-engines' resource for auth context
+Current Vault state:
+- Mounted secret engines: {secret_engines}
+- Existing policies (for pattern reference): {policies}
+- Enabled authentication methods: {auth_engines}
 
-Then generate a JSON policy object following this structure:
+Return ONLY a JSON policy object. Use only the paths that exist above.
+Follow least-privilege: prefer read/list over create/update/delete.
+For KV v2, use secret/data/* for data access and secret/metadata/* for metadata.
+Avoid sudo unless absolutely required — it grants unrestricted access.
+
+Example structure:
 {{
     "path": {{
-        "secret/data/example/*": {{"capabilities": ["read", "list"]}},
-        "database/creds/myapp": {{"capabilities": ["read"]}}
+        "secret/data/myapp/*": {{"capabilities": ["read", "list"]}}
     }}
-}}
-
-Security rules:
-1. Use minimal necessary capabilities: read, list, create, update, delete, sudo
-2. Be specific with paths - avoid wildcards unless truly needed
-3. For KV v2: use secret/data/* for data, secret/metadata/* for metadata
-4. Follow least-privilege principle
-
-Return ONLY the JSON policy object, no markdown code blocks, no explanations.
-"""
+}}"""
