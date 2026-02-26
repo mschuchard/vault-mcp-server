@@ -22,3 +22,5 @@ jobs:
       uses: actions/checkout@v4
     - name: ruff
       run: ruff check .
+    - name: ty
+      run: ty check .
