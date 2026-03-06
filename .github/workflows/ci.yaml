@@ -20,7 +20,9 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+    - name: install dependencies
+      run: pip install hvac
     - name: ruff
       run: ruff check .
     - name: ty
-      run: ty check .
+      run: ty check src

@@ -12,11 +12,14 @@ jobs:
     steps:
     - checkout
     - run:
+        name: install dependencies
+        command: pip install hvac
+    - run:
         name: ruff
         command: ruff check .
     - run:
         name: ty
-        command: ty check .
+        command: ty check src
 
 workflows:
   execute_tests:
