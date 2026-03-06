@@ -65,6 +65,12 @@ async def generate_smart_policy(
     secret_engines: dict = await secret.list_(ctx)
     auth_engines: dict = await auth.list_(ctx)
 
+    # read policy contents for pattern reference
+    policy_contents: dict[str, dict] = {}
+    for name in policies:
+        if name not in ('root', 'default'):
+            policy_contents[name] = await read(ctx, name=name)
+
     return f"""Generate a Vault ACL policy for: {description}
 
 Current Vault state:

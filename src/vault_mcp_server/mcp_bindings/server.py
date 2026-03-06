@@ -52,9 +52,9 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
             list_resources_settings=ListToolsSettings(ttl=cache_ttl),
             # cache all read-only tool calls (using annotation filter)
             call_tool_settings=CallToolSettings(
-                ttl=30,
-                # This lambda checks if the tool has readOnlyHint annotation
-                should_cache=lambda name, args, tool_info: (tool_info.get('annotations', {}).get('readOnlyHint', False)),
+                ttl=cache_ttl,
+                # check if the tool has readOnlyHint annotation
+                should_cache=lambda name, args, tool_info: tool_info.get('annotations', {}).get('readOnlyHint', False),
             ),
             # cache resource reads
             read_resource_settings=ReadResourceSettings(ttl=cache_ttl),
