@@ -21,7 +21,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
     - name: install dependencies
-      run: pip install hvac
+      run: pip install hvac fastmcp
     - name: ruff
       run: ruff check .
     - name: ty

@@ -13,7 +13,7 @@ jobs:
     - checkout
     - run:
         name: install dependencies
-        command: pip install hvac
+        command: pip install hvac fastmcp
     - run:
         name: ruff
         command: ruff check .
