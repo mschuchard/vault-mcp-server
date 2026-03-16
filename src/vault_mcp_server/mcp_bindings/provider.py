@@ -5,7 +5,7 @@ from fastmcp.resources import Resource
 from fastmcp.prompts import Prompt
 
 from vault_mcp_server.vault.secret import database, kv2, pki, transit
-from vault_mcp_server.vault.sys import audit, auth, policy, secret
+from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
 
 
 def resource_provider(mcp: FastMCP) -> None:
@@ -41,6 +41,17 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available configured Vault ACL policies',
             mime_type='application/json',
             tags=['acl-policy'],
+            annotations={'readOnlyHint': True, 'idempotentHint': True},
+        )
+    )
+    mcp.add_resource(
+        Resource.from_function(
+            fn=raft.read_config,
+            uri='raft://config',
+            name='raft-cluster-configuration',
+            description='Read the Raft integrated storage configuration and peer list',
+            mime_type='application/json',
+            tags=['raft'],
             annotations={'readOnlyHint': True, 'idempotentHint': True},
         )
     )
@@ -140,6 +151,17 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=policy.delete, name='policy-delete', annotations=del_annotations, tags=['acl-policy'])
     mcp.tool(name_or_fn=policy.read, name='policy-read', annotations=rl_annotations, tags=['acl-policy'])
     mcp.tool(name_or_fn=policy.list_, name='policies-list', annotations=rl_annotations, tags=['acl-policy'])
+    # raft
+    mcp.tool(name_or_fn=raft.read_config, name='raft-config-read', annotations=rl_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.join, name='raft-cluster-join', annotations=cu_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.remove_node, name='raft-node-remove', annotations=del_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.take_snapshot, name='raft-snapshot-take', annotations=rl_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.restore_snapshot, name='raft-snapshot-restore', annotations=cu_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.read_auto_snapshot_status, name='raft-auto-snapshot-status-read', annotations=rl_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.read_auto_snapshot_config, name='raft-auto-snapshot-config-read', annotations=rl_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.list_auto_snapshot_configs, name='raft-auto-snapshot-configs-list', annotations=rl_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.create_update_auto_snapshot_config, name='raft-auto-snapshot-config-create-or-update', annotations=cu_annotations, tags=['raft'])
+    mcp.tool(name_or_fn=raft.delete_auto_snapshot_config, name='raft-auto-snapshot-config-delete', annotations=del_annotations, tags=['raft'])
     # secret
     mcp.tool(name_or_fn=secret.enable, name='secret-engine-enable', annotations=cu_annotations, tags=['secret-engine'])
     mcp.tool(name_or_fn=secret.disable, name='secret-engine-disable', annotations=del_annotations, tags=['secret-engine'])
