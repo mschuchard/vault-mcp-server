@@ -6,6 +6,7 @@ from vault_mcp_server import dev
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason='requires Vault to be running with the Raft integrated storage backend')
 async def test_raft_read_config() -> None:
     async with dev.client as client:
         result = await client.call_tool(name='raft-config-read')
@@ -16,24 +17,47 @@ async def test_raft_read_config() -> None:
         assert 'index' in result.data
 
 
-# @pytest.mark.asyncio
-# async def test_raft_snapshot_roundtrip() -> None:
-#    async with dev.client as client:
-#        # take a snapshot
-#        result = await client.call_tool(name='raft-snapshot-take')
-#        assert result.is_error is False
-#        assert isinstance(result.data.get('snapshot'), str)
-#        assert len(result.data['snapshot']) > 0
-#
-#        # restore it (non-force)
-#        snapshot_b64 = result.data['snapshot']
-#        result = await client.call_tool(name='raft-snapshot-restore', arguments={'snapshot': snapshot_b64})
-#        assert result.data.get('success') is True
+@pytest.mark.asyncio
+@pytest.mark.skip(reason='requires a multi-node Raft cluster - not available in single-node test environment')
+async def test_raft_cluster_join() -> None:
+    async with dev.client as client:
+        result = await client.call_tool(
+            name='raft-cluster-join',
+            arguments={'leader_api_addr': 'https://vault-leader:8200'},
+        )
+        assert isinstance(result.data, dict)
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason='requires a multi-node Raft cluster - not available in single-node test environment')
+async def test_raft_node_remove() -> None:
+    async with dev.client as client:
+        result = await client.call_tool(name='raft-config-read')
+        servers: list[dict] = result.data['config']['servers']
+        # only attempt removal when there is more than one peer
+        assert len(servers) > 1, 'need at least two nodes to test peer removal'
+        non_leader = next(s for s in servers if not s.get('leader'))
+        result = await client.call_tool(name='raft-node-remove', arguments={'server_id': non_leader['node_id']})
+        assert result.data.get('success') is True
+
+
+@pytest.mark.asyncio
+@pytest.mark.skip(reason='snapshot API requires Vault Enterprise')
+async def test_raft_snapshot_roundtrip() -> None:
+    async with dev.client as client:
+        result = await client.call_tool(name='raft-snapshot-take')
+        assert result.is_error is False
+        assert isinstance(result.data.get('snapshot'), str)
+        assert len(result.data['snapshot']) > 0
+
+        snapshot_b64 = result.data['snapshot']
+        result = await client.call_tool(name='raft-snapshot-restore', arguments={'snapshot': snapshot_b64})
+        assert result.data.get('success') is True
+
+
+@pytest.mark.asyncio
+@pytest.mark.skip(reason='auto-snapshot API requires Vault Enterprise')
 async def test_raft_auto_snapshot_config_lifecycle() -> None:
-    """Test auto-snapshot config CRUD (Vault Enterprise only - skipped on OSS)."""
     async with dev.client as client:
         name = 'test-auto-snap'
 
