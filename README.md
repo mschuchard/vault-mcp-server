@@ -78,12 +78,14 @@ Note that `CACHE_TTL` is an optional environment variable that establishes the c
 - Current Enabled Audit Devices
 - Current Enabled Authentication Engines
 - Current Enabled Secret Engines
+- Current Raft Cluster Configuration
 
 ### Tools
 - System Backend
   - ACL Policies
   - Audit Devices
   - Authentication Engines
+  - Raft (Clustering and Storage Snapshots)
   - Secrets Engines
 - Secrets Backend
   - Database (Beta)

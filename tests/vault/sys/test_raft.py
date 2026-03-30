@@ -6,7 +6,6 @@ from vault_mcp_server import dev
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip(reason='requires Vault to be running with the Raft integrated storage backend')
 async def test_raft_read_config() -> None:
     async with dev.client as client:
         result = await client.call_tool(name='raft-config-read')
@@ -14,7 +13,7 @@ async def test_raft_read_config() -> None:
         # read_raft_config returns data with 'config' (containing 'servers') and 'index'
         assert 'config' in result.data
         assert 'servers' in result.data['config']
-        assert 'index' in result.data
+        assert 'index' in result.data['config']
 
 
 @pytest.mark.asyncio
@@ -42,7 +41,6 @@ async def test_raft_node_remove() -> None:
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip(reason='snapshot API requires Vault Enterprise')
 async def test_raft_snapshot_roundtrip() -> None:
     async with dev.client as client:
         result = await client.call_tool(name='raft-snapshot-take')

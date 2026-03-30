@@ -11,6 +11,7 @@ bootstrap:
 	@sleep 2
 	@VAULT_ADDR=$(VAULT_ADDR) vault operator init -key-shares=1 -key-threshold=1 -format=json > $(VAULT_INIT_JSON)
 	@VAULT_ADDR=$(VAULT_ADDR) vault operator unseal $$(jq -r '.unseal_keys_b64[0]' $(VAULT_INIT_JSON))
+	@VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) vault secrets enable -path=secret -version=2 kv
 	@echo "VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON))"
 
 shutdown:

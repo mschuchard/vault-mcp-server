@@ -1,6 +1,7 @@
 """test vault secret engine mcp integrations"""
 
 import pytest
+import asyncio
 
 from vault_mcp_server import dev
 
@@ -39,6 +40,8 @@ async def test_secret() -> None:
         result = await client.call_tool(name='secret-engine-move', arguments={'from_path': 'kubernetes', 'to_path': 'k8s'})
         assert result.data.get('success') is True
         assert result.data.get('error') is None
+
+        await asyncio.sleep(1)
 
         # verify move by reading configuration at new path
         result = await client.call_tool(name='secret-engine-read-configuration', arguments={'mount': 'k8s'})
