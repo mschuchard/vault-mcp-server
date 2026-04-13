@@ -10,7 +10,7 @@ def generate_root(
     ctx: Context,
     type: Annotated[Literal['exported', 'internal', 'kms'], 'The type of key to generate for the root CA.'],
     common_name: Annotated[str, 'The requested common name for the root CA certificate.'],
-    extra_params: Annotated[dict, 'Extra parameters for root generation (ttl, alt_names, ip_sans, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for root generation (ttl, alt_names, ip_sans, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """generate a root ca certificate with the pki engine in vault"""
@@ -46,7 +46,7 @@ def generate_intermediate(
     ctx: Context,
     type: Annotated[Literal['exported', 'internal', 'kms'], 'The type of key to generate for the intermediate CA.'],
     common_name: Annotated[str, 'The requested common name for the intermediate CA certificate.'],
-    extra_params: Annotated[dict, 'Extra parameters for intermediate generation (ttl, alt_names, ip_sans, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for intermediate generation (ttl, alt_names, ip_sans, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """generate an intermediate certificate with the pki engine in vault"""
@@ -68,7 +68,7 @@ def sign_intermediate_certificate(
     ctx: Context,
     csr: Annotated[str, 'The PEM-encoded CSR (Certificate Signing Request) to sign.'],
     common_name: Annotated[str, 'The requested common name for the intermediate certificate.'],
-    extra_params: Annotated[dict, 'Extra parameters for signing (ttl, format, max_path_length, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for signing (ttl, format, max_path_length, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """sign an intermediate ca certificate with the pki engine in vault"""
@@ -88,7 +88,7 @@ def generate_certificate(
     ctx: Context,
     role: Annotated[str, 'The name of the role to create the certificate against.'],
     common_name: Annotated[str, 'The requested common name for the certificate.'],
-    extra_params: Annotated[dict, 'Extra parameters for certificate generation (ttl, alt_names, ip_sans, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for certificate generation (ttl, alt_names, ip_sans, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """generate a private key and certificate with the pki engine in vault"""
@@ -102,7 +102,7 @@ def sign_certificate(
     role: Annotated[str, 'The name of the role to sign the certificate.'],
     csr: Annotated[str, 'The PEM-encoded CSR (Certificate Signing Request) to sign.'],
     common_name: Annotated[str, 'The requested common name for the certificate.'],
-    extra_params: Annotated[dict, 'Extra parameters for signing (ttl, alt_names, ip_sans, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for signing (ttl, alt_names, ip_sans, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """sign a certificate with the pki engine in vault"""
@@ -183,7 +183,7 @@ def submit_ca_information(
 def create_update_role(
     ctx: Context,
     name: Annotated[str, 'The name of the role to create or update.'],
-    extra_params: Annotated[dict, 'Extra parameters for the role.'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for the role.'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """create or update a role with the pki engine in vault"""
@@ -232,7 +232,7 @@ async def list_issuers(ctx: Context, mount: Annotated[str, 'The "path" the metho
 def update_issuer(
     ctx: Context,
     issuer_ref: Annotated[str, 'The reference ID of the issuer to update.'],
-    extra_params: Annotated[dict, 'Extra parameters for issuer update (issuer_name, leaf_not_after_behavior, etc.).'] = None,
+    extra_params: Annotated[dict | None, 'Extra parameters for issuer update (issuer_name, leaf_not_after_behavior, etc.).'] = None,
     mount: Annotated[str, 'The "path" the method/backend was mounted on.'] = 'pki',
 ) -> dict:
     """update an issuer configuration with the pki engine in vault"""

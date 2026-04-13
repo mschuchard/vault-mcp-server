@@ -9,6 +9,9 @@ dependencies = [
     "fastmcp>=2.14.0,<3.0.0",
 ]
 
+[tool.ty.rules]
+unresolved-attribute = "ignore"
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.0,<10.0.0",
