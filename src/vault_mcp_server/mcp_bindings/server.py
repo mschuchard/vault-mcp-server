@@ -6,7 +6,7 @@ from typing import Literal
 import os
 
 from fastmcp import FastMCP
-from fastmcp.server.middleware.caching import ResponseCachingMiddleware, CallToolSettings, ListToolsSettings, ReadResourceSettings
+from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ReadResourceSettings
 import hvac
 
 from vault_mcp_server.mcp_bindings import provider

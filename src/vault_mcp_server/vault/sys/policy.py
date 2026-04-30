@@ -58,9 +58,11 @@ async def generate_smart_policy(
     description: Annotated[str, 'Natural language description of what this policy should allow'],
 ) -> str:
     """Generate a context-aware Vault ACL policy prompt with current Vault state"""
+    # validate description
     if not description.strip():
         raise ValueError('description must not be empty')
 
+    # gather resource information
     policies: list[str] = await list_(ctx)
     secret_engines: dict = await secret.list_(ctx)
     auth_engines: dict = await auth.list_(ctx)
