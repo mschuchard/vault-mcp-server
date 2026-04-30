@@ -6,6 +6,7 @@ from fastmcp.prompts import Prompt
 
 from vault_mcp_server.vault.secret import database, kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
+from vault_mcp_server.vault import multi
 
 
 def resource_provider(mcp: FastMCP) -> None:
@@ -203,6 +204,13 @@ def prompt_provider(mcp: FastMCP) -> None:
             fn=policy.generate_smart_policy,
             name='generate-smart-acl-policy',
             tags={'acl-policy'},
+        )
+    )
+    mcp.add_prompt(
+        Prompt.from_function(
+            fn=multi.diagnose_vault_state,
+            name='diagnose-vault-state',
+            tags={'multiple'},
         )
     )
 
