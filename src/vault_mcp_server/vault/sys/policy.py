@@ -4,6 +4,7 @@ from typing import Annotated, List
 from fastmcp import Context
 
 from vault_mcp_server.vault.sys import auth, secret
+from vault_mcp_server.vault.secret import database, kv2, pki, transit
 
 
 def create_update(
@@ -72,20 +73,57 @@ async def generate_smart_policy(
     for name in policies:
         policy_contents[name] = await read(ctx, name=name)
 
+    # gather per-engine role/key/path information based on what is actually mounted
+    engine_roles: dict[str, dict] = {}
+    mounted_paths: set = set(secret_engines.keys())
+
+    for mount_path in mounted_paths:
+        # strip trailing slash vault includes in listed paths
+        clean_path = mount_path.rstrip('/')
+        engine_type = secret_engines[mount_path].get('type', '')
+
+        # gather the roles for each mounted secret engine
+        try:
+            match engine_type:
+                case 'database':
+                    dynamic = await database.list_roles(ctx, mount=clean_path)
+                    static = await database.list_static_roles(ctx, mount=clean_path)
+                    engine_roles[clean_path] = {'type': 'database', 'dynamic_roles': dynamic, 'static_roles': static}
+                case 'pki':
+                    roles = await pki.list_roles(ctx, mount=clean_path)
+                    issuers = await pki.list_issuers(ctx, mount=clean_path)
+                    engine_roles[clean_path] = {'type': 'pki', 'roles': roles, 'issuers': issuers}
+                case 'transit':
+                    keys = await transit.list_(ctx, mount=clean_path)
+                    engine_roles[clean_path] = {'type': 'transit', 'keys': keys}
+                case 'kv' if secret_engines[mount_path].get('options', {}).get('version') == '2':
+                    paths = await kv2.list_(ctx, mount=clean_path)
+                    engine_roles[clean_path] = {'type': 'kv2', 'top_level_paths': paths}
+        except Exception:
+            pass
+
     return f"""Generate a Vault ACL policy for: {description}
 
 Current Vault state:
 - Mounted secret engines: {secret_engines}
+- Secret engine roles and keys: {engine_roles}
 - Existing ACL policies: {policies}
 - Enabled authentication methods: {auth_engines}
 - Policy contents (for pattern reference): {policy_contents}
 
 Return ONLY a JSON policy object. Use only the paths that exist above.
 Follow least-privilege: prefer read/list over create/update/delete.
-For KV v2, use secret/data/* for data access and secret/metadata/* for metadata.
+
+Path construction guidance based on engine_roles:
+- database dynamic roles: <mount>/creds/<role-name>
+- database static roles: <mount>/static-creds/<role-name>
+- pki roles: <mount>/issue/<role-name> and <mount>/sign/<role-name>
+- transit keys: <mount>/encrypt/<key-name> and <mount>/decrypt/<key-name>
+- kv2 data: <mount>/data/<path> and <mount>/metadata/<path>
+
 Avoid sudo unless absolutely required — it grants unrestricted access.
 
-Example structure:
+Example structure in addition to those enumerated above:
 {{
     "path": {{
         "secret/data/myapp/*": {{"capabilities": ["read", "list"]}}
