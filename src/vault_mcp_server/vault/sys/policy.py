@@ -70,15 +70,15 @@ async def generate_smart_policy(
     # read policy contents for pattern reference
     policy_contents: dict[str, dict] = {}
     for name in policies:
-        if name not in ('root', 'default'):
-            policy_contents[name] = await read(ctx, name=name)
+        policy_contents[name] = await read(ctx, name=name)
 
     return f"""Generate a Vault ACL policy for: {description}
 
 Current Vault state:
 - Mounted secret engines: {secret_engines}
-- Existing policies (for pattern reference): {policies}
+- Existing ACL policies: {policies}
 - Enabled authentication methods: {auth_engines}
+- Policy contents (for pattern reference): {policy_contents}
 
 Return ONLY a JSON policy object. Use only the paths that exist above.
 Follow least-privilege: prefer read/list over create/update/delete.
