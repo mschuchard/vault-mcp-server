@@ -3,6 +3,7 @@
 from fastmcp import FastMCP
 from fastmcp.resources import Resource
 from fastmcp.prompts import Prompt
+from mcp.types import Annotations, Role
 
 from vault_mcp_server.vault.secret import database, kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
@@ -20,7 +21,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault audit devices',
             mime_type='application/json',
             tags={'audit'},
-            annotations={'readOnlyHint': True, 'idempotentHint': True},
+            annotations=Annotations(audience=[Role.assistant]),
         )
     )
     mcp.add_resource(
@@ -31,7 +32,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault authentication engines',
             mime_type='application/json',
             tags={'authentication'},
-            annotations={'readOnlyHint': True, 'idempotentHint': True},
+            annotations=Annotations(audience=[Role.assistant]),
         )
     )
     mcp.add_resource(
@@ -42,7 +43,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available configured Vault ACL policies',
             mime_type='application/json',
             tags={'acl-policy'},
-            annotations={'readOnlyHint': True, 'idempotentHint': True},
+            annotations=Annotations(audience=[Role.assistant]),
         )
     )
     mcp.add_resource(
@@ -53,7 +54,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='Read the Raft integrated storage configuration and peer list',
             mime_type='application/json',
             tags={'raft'},
-            annotations={'readOnlyHint': True, 'idempotentHint': True},
+            annotations=Annotations(audience=[Role.assistant]),
         )
     )
     mcp.add_resource(
@@ -64,7 +65,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault secret engines',
             mime_type='application/json',
             tags={'secret-engine'},
-            annotations={'readOnlyHint': True, 'idempotentHint': True},
+            annotations=Annotations(audience=[Role.assistant]),
         )
     )
 
