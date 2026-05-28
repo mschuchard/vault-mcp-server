@@ -24,6 +24,7 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
             'client': vault_client,
             'database': vault_client.secrets.database,
             'kv2': vault_client.secrets.kv.v2,
+            'identity': vault_client.secrets.identity,
             'pki': vault_client.secrets.pki,
             'sys': vault_client.sys,
             'transit': vault_client.secrets.transit,
