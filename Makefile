@@ -17,8 +17,9 @@ bootstrap:
 shutdown:
 	@killall vault || true
 
+# make ARGS='-k EXPRESSION' unit
 unit: shutdown bootstrap
-	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run pytest
+	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run pytest $(ARGS)
 
 accept:
 	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run fastmcp dev src/vault_mcp_server/dev.py
