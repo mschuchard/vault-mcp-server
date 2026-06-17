@@ -73,14 +73,14 @@ Note that `CACHE_TTL` is an optional environment variable that establishes the c
 
 ## Features
 
-### Resources
+### Resources (5)
 - Current Enabled ACL Policies
 - Current Enabled Audit Devices
 - Current Enabled Authentication Engines
 - Current Enabled Secret Engines
 - Current Raft Cluster Configuration
 
-### Tools
+### Tools (132)
 - System Backend
   - ACL Policies
   - Audit Devices
@@ -89,11 +89,12 @@ Note that `CACHE_TTL` is an optional environment variable that establishes the c
   - Secrets Engines
 - Secrets Backend
   - Database (Beta)
+  - Identity/Alias
   - KV Version 2
   - PKI
   - Transit
 
-### Prompts
+### Prompts (4)
 - mcp.vault.example-acl-policy: This displays an example Vault ACL Policy in JSON string format. The displayed policy can be modified and entered as-is to the LLM (verified with agentic Claude), and it will understand that you want to create an ACL Policy through the Vault MCP Server with your modified content (with an auto-generated name). However, it is probably more prudent to use it as an input to the tool instead.
 - mcp.vault.generate-acl-policy: This displays a pseudo-example Vault ACL Policy in JSON string format similar to the above prompt. The primary difference is that this prompt accepts a `paths` argument in `list[str]` type format, and the returned policy will contain the input paths. However, the `capabilities` will still be boilerplate, and need to be modified for your usage.
 - mcp.vault.generate-smart-acl-policy: This is an interactive workflow with an agentic LLM to create and optimize a Vault ACL policy based on user requirements and prompts. It will also return the policy in JSON string format.

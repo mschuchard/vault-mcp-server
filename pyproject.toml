@@ -4,13 +4,26 @@ version = "1.0.0"
 description = "MCP Server for Vault"
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [{name = "Matthew Schuchard"}]
+maintainers = [{name = "Matthew Schuchard"}]
+license = {file = "LICENSE"}
+keywords = ["mcp", "vault", "server"]
 dependencies = [
     "hvac>=2.4.0,<3.0.0",
     "fastmcp>=2.14.0,<3.0.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/mschuchard/vault-mcp-server"
+Documentation = "https://github.com/mschuchard/vault-mcp-server"
+Issues = "https://github.com/mschuchard/vault-mcp-server/issues"
+
 [tool.ty.rules]
 unresolved-attribute = "ignore"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
 
 [dependency-groups]
 dev = [
