@@ -3,7 +3,7 @@
 from fastmcp import FastMCP
 from fastmcp.resources import Resource
 from fastmcp.prompts import Prompt
-from mcp.types import Annotations, Role
+from mcp.types import Annotations
 
 from vault_mcp_server.vault.secret import database, identity, kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
@@ -21,7 +21,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault audit devices',
             mime_type='application/json',
             tags={'audit'},
-            annotations=Annotations(audience=[Role.assistant]),
+            annotations=Annotations(audience=['assistant']),
         )
     )
     mcp.add_resource(
@@ -32,7 +32,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault authentication engines',
             mime_type='application/json',
             tags={'authentication'},
-            annotations=Annotations(audience=[Role.assistant]),
+            annotations=Annotations(audience=['assistant']),
         )
     )
     mcp.add_resource(
@@ -43,7 +43,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available configured Vault ACL policies',
             mime_type='application/json',
             tags={'acl-policy'},
-            annotations=Annotations(audience=[Role.assistant]),
+            annotations=Annotations(audience=['assistant']),
         )
     )
     mcp.add_resource(
@@ -54,7 +54,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='Read the Raft integrated storage configuration and peer list',
             mime_type='application/json',
             tags={'raft'},
-            annotations=Annotations(audience=[Role.assistant]),
+            annotations=Annotations(audience=['assistant']),
         )
     )
     mcp.add_resource(
@@ -65,7 +65,7 @@ def resource_provider(mcp: FastMCP) -> None:
             description='List the available enabled Vault secret engines',
             mime_type='application/json',
             tags={'secret-engine'},
-            annotations=Annotations(audience=[Role.assistant]),
+            annotations=Annotations(audience=['assistant']),
         )
     )
 
@@ -112,7 +112,6 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=identity.delete_entity, name='identity-entity-delete', annotations=del_annotations, tags={'identity'})
     mcp.tool(name_or_fn=identity.delete_entity_by_name, name='identity-entity-delete-by-name', annotations=del_annotations, tags={'identity'})
     mcp.tool(name_or_fn=identity.list_entities, name='identity-entities-list', annotations=rl_annotations, tags={'identity'})
-    mcp.tool(name_or_fn=identity.batch_delete_entities, name='identity-entities-batch-delete', annotations=del_annotations, tags={'identity'})
     mcp.tool(name_or_fn=identity.merge_entities, name='identity-entities-merge', annotations=cu_annotations, tags={'identity'})
     # identity - entity alias
     mcp.tool(name_or_fn=identity.create_or_update_entity_alias, name='identity-entity-alias-create-or-update', annotations=cu_annotations, tags={'identity'})
