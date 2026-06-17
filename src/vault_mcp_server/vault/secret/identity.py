@@ -63,16 +63,20 @@ def update_entity(
     policies: Annotated[list[str] | None, 'List of policies to be tied to the entity.'] = None,
     disabled: Annotated[bool | None, 'Whether the entity is disabled.'] = None,
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
-) -> dict:
+) -> dict[str, bool]:
     """update an existing entity by ID in the vault identity engine"""
-    return ctx.request_context.lifespan_context['identity'].update_entity(
-        entity_id=entity_id,
-        name=name,
-        metadata=metadata,
-        policies=policies,
-        disabled=disabled,
-        mount_point=mount_point,
-    )['data']
+    return {
+        'success': ctx.request_context.lifespan_context['identity']
+        .update_entity(
+            entity_id=entity_id,
+            name=name,
+            metadata=metadata,
+            policies=policies,
+            disabled=disabled,
+            mount_point=mount_point,
+        )
+        .ok
+    }
 
 
 def delete_entity(
@@ -102,15 +106,6 @@ async def list_entities(
         return ctx.request_context.lifespan_context['identity'].list_entities(mount_point=mount_point)['data'].get('keys', [])
     except hvac.exceptions.InvalidPath:
         return []
-
-
-def batch_delete_entities(
-    ctx: Context,
-    entity_ids: Annotated[list[str], 'List of entity IDs to delete.'],
-    mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
-) -> dict[str, bool]:
-    """batch delete multiple entities by ID from the vault identity engine"""
-    return {'success': ctx.request_context.lifespan_context['identity'].batch_delete_entities(entity_ids=entity_ids, mount_point=mount_point).ok}
 
 
 def merge_entities(
@@ -258,8 +253,8 @@ async def read_group_by_name(
 def update_group(
     ctx: Context,
     group_id: Annotated[str, 'The ID of the group to update.'],
-    name: Annotated[str | None, 'New name for the group.'] = None,
-    group_type: Annotated[str | None, 'Type of the group ("internal" or "external").'] = None,
+    name: Annotated[str, 'Name for the group.'],
+    group_type: Annotated[str, 'Type of the group ("internal" or "external").'] = 'internal',
     metadata: Annotated[dict | None, 'Arbitrary key-value metadata to associate with the group.'] = None,
     policies: Annotated[list[str] | None, 'List of policies to be tied to the group.'] = None,
     member_group_ids: Annotated[list[str] | None, 'List of group IDs to be assigned as sub-groups (internal groups only).'] = None,
@@ -375,7 +370,7 @@ def delete_group_alias(
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
 ) -> dict[str, bool]:
     """delete a group alias by ID from the vault identity engine"""
-    return {'success': ctx.request_context.lifespan_context['identity'].delete_group_alias(alias_id=alias_id, mount_point=mount_point).ok}
+    return {'success': ctx.request_context.lifespan_context['identity'].delete_group_alias(entity_id=alias_id, mount_point=mount_point).ok}
 
 
 # ---------------------------------------------------------------------------
@@ -445,7 +440,7 @@ async def read_token_backend_configuration(
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
 ) -> dict:
     """read the OIDC token backend configuration from the vault identity engine"""
-    return ctx.request_context.lifespan_context['identity'].read_token_backend_configuration(mount_point=mount_point)['data']
+    return ctx.request_context.lifespan_context['identity'].read_tokens_backend_configuration(mount_point=mount_point)['data']
 
 
 def create_named_key(
