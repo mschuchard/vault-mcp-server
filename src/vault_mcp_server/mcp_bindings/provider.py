@@ -5,7 +5,7 @@ from fastmcp.resources import Resource
 from fastmcp.prompts import Prompt
 from mcp.types import Annotations, Role
 
-from vault_mcp_server.vault.secret import database, kv2, pki, transit
+from vault_mcp_server.vault.secret import database, identity, kv2, pki, transit
 from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
 from vault_mcp_server.vault import multi
 
@@ -104,6 +104,55 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(name_or_fn=database.delete_static_role, name='database-static-role-delete', annotations=del_annotations, tags={'database'})
     mcp.tool(name_or_fn=database.get_static_credentials, name='database-static-credentials-get', annotations=rl_annotations, tags={'database'})
     mcp.tool(name_or_fn=database.rotate_static_role_credentials, name='database-static-credentials-rotate', annotations=cu_annotations, tags={'database'})
+    # identity - entity
+    mcp.tool(name_or_fn=identity.create_or_update_entity, name='identity-entity-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_entity, name='identity-entity-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_entity_by_name, name='identity-entity-read-by-name', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.update_entity, name='identity-entity-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_entity, name='identity-entity-delete', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_entity_by_name, name='identity-entity-delete-by-name', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_entities, name='identity-entities-list', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.batch_delete_entities, name='identity-entities-batch-delete', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.merge_entities, name='identity-entities-merge', annotations=cu_annotations, tags={'identity'})
+    # identity - entity alias
+    mcp.tool(name_or_fn=identity.create_or_update_entity_alias, name='identity-entity-alias-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_entity_alias, name='identity-entity-alias-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.update_entity_alias, name='identity-entity-alias-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_entity_aliases, name='identity-entity-aliases-list', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_entity_alias, name='identity-entity-alias-delete', annotations=del_annotations, tags={'identity'})
+    # identity - group
+    mcp.tool(name_or_fn=identity.create_or_update_group, name='identity-group-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_group, name='identity-group-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_group_by_name, name='identity-group-read-by-name', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.update_group, name='identity-group-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_group, name='identity-group-delete', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_group_by_name, name='identity-group-delete-by-name', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_groups, name='identity-groups-list', annotations=rl_annotations, tags={'identity'})
+    # identity - group alias
+    mcp.tool(name_or_fn=identity.create_or_update_group_alias, name='identity-group-alias-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_group_alias, name='identity-group-alias-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.update_group_alias, name='identity-group-alias-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_group_aliases, name='identity-group-aliases-list', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_group_alias, name='identity-group-alias-delete', annotations=del_annotations, tags={'identity'})
+    # identity - lookup
+    mcp.tool(name_or_fn=identity.lookup_entity, name='identity-entity-lookup', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.lookup_group, name='identity-group-lookup', annotations=rl_annotations, tags={'identity'})
+    # identity - oidc
+    mcp.tool(name_or_fn=identity.configure_tokens_backend, name='identity-oidc-configure', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_token_backend_configuration, name='identity-oidc-configuration-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.create_named_key, name='identity-oidc-key-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_named_key, name='identity-oidc-key-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_named_key, name='identity-oidc-key-delete', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_named_keys, name='identity-oidc-keys-list', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.rotate_named_key, name='identity-oidc-key-rotate', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.create_or_update_role, name='identity-oidc-role-create-or-update', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_role, name='identity-oidc-role-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.delete_role, name='identity-oidc-role-delete', annotations=del_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.list_roles, name='identity-oidc-roles-list', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.generate_signed_id_token, name='identity-oidc-token-generate', annotations=cu_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.introspect_signed_id_token, name='identity-oidc-token-introspect', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_well_known_configurations, name='identity-oidc-well-known-read', annotations=rl_annotations, tags={'identity'})
+    mcp.tool(name_or_fn=identity.read_active_public_keys, name='identity-oidc-public-keys-read', annotations=rl_annotations, tags={'identity'})
     # kv2
     mcp.tool(name_or_fn=kv2.create_update, name='kv2-create-or-update', annotations=cu_annotations, tags={'key-value-v2'})
     mcp.tool(name_or_fn=kv2.delete, name='kv2-delete', annotations=del_annotations, tags={'key-value-v2'})
