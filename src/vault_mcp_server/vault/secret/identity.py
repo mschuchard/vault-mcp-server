@@ -260,18 +260,22 @@ def update_group(
     member_group_ids: Annotated[list[str] | None, 'List of group IDs to be assigned as sub-groups (internal groups only).'] = None,
     member_entity_ids: Annotated[list[str] | None, 'List of entity IDs to be assigned as members (internal groups only).'] = None,
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
-) -> dict:
+) -> dict[str, bool]:
     """update an existing group by ID in the vault identity engine"""
-    return ctx.request_context.lifespan_context['identity'].update_group(
-        group_id=group_id,
-        name=name,
-        group_type=group_type,
-        metadata=metadata,
-        policies=policies,
-        member_group_ids=member_group_ids,
-        member_entity_ids=member_entity_ids,
-        mount_point=mount_point,
-    )['data']
+    return {
+        'success': ctx.request_context.lifespan_context['identity']
+        .update_group(
+            group_id=group_id,
+            name=name,
+            group_type=group_type,
+            metadata=metadata,
+            policies=policies,
+            member_group_ids=member_group_ids,
+            member_entity_ids=member_entity_ids,
+            mount_point=mount_point,
+        )
+        .ok
+    }
 
 
 def delete_group(
@@ -384,7 +388,6 @@ async def lookup_entity(
     entity_id: Annotated[str | None, 'ID of the entity to look up.'] = None,
     alias_name: Annotated[str | None, 'Name of the alias associated with the entity. Must be used with alias_accessor.'] = None,
     alias_accessor: Annotated[str | None, 'Accessor of the auth mount the alias belongs to. Must be used with alias_name.'] = None,
-    alias_mount_type: Annotated[str | None, 'Auth mount type of the alias (e.g. "github", "userpass").'] = None,
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
 ) -> dict:
     """look up an entity by name, ID, or alias attributes in the vault identity engine"""
@@ -392,8 +395,7 @@ async def lookup_entity(
         name=name,
         entity_id=entity_id,
         alias_name=alias_name,
-        alias_accessor=alias_accessor,
-        alias_mount_type=alias_mount_type,
+        alias_mount_accessor=alias_accessor,
         mount_point=mount_point,
     )['data']
 
@@ -404,7 +406,6 @@ async def lookup_group(
     group_id: Annotated[str | None, 'ID of the group to look up.'] = None,
     alias_name: Annotated[str | None, 'Name of the alias associated with the group. Must be used with alias_accessor.'] = None,
     alias_accessor: Annotated[str | None, 'Accessor of the auth mount the alias belongs to. Must be used with alias_name.'] = None,
-    alias_mount_type: Annotated[str | None, 'Auth mount type of the alias (e.g. "github", "ldap").'] = None,
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
 ) -> dict:
     """look up a group by name, ID, or alias attributes in the vault identity engine"""
@@ -412,8 +413,7 @@ async def lookup_group(
         name=name,
         group_id=group_id,
         alias_name=alias_name,
-        alias_accessor=alias_accessor,
-        alias_mount_type=alias_mount_type,
+        alias_mount_accessor=alias_accessor,
         mount_point=mount_point,
     )['data']
 
@@ -451,16 +451,20 @@ def create_named_key(
     allowed_client_ids: Annotated[list[str] | None, 'List of role client IDs allowed to use this key for token generation. Use ["*"] to allow all.'] = None,
     algorithm: Annotated[str, 'Signing algorithm. One of "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "EdDSA".'] = 'RS256',
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
-) -> dict:
+) -> dict[str, bool]:
     """create or update a named signing key for OIDC token generation in the vault identity engine"""
-    return ctx.request_context.lifespan_context['identity'].create_named_key(
-        name=name,
-        rotation_period=rotation_period,
-        verification_ttl=verification_ttl,
-        allowed_client_ids=allowed_client_ids,
-        algorithm=algorithm,
-        mount_point=mount_point,
-    )
+    return {
+        'success': ctx.request_context.lifespan_context['identity']
+        .create_named_key(
+            name=name,
+            rotation_period=rotation_period,
+            verification_ttl=verification_ttl,
+            allowed_client_ids=allowed_client_ids,
+            algorithm=algorithm,
+            mount_point=mount_point,
+        )
+        .ok
+    }
 
 
 async def read_named_key(
@@ -521,16 +525,20 @@ def create_or_update_role(
     client_id: Annotated[str | None, 'Optional client ID for the role. If not set, Vault generates one.'] = None,
     ttl: Annotated[str, 'TTL of the generated tokens. Uses Go duration format (e.g. "1h"). Defaults to the key\'s verification_ttl.'] = '24h',
     mount_point: Annotated[str, 'The "path" the identity engine was mounted on.'] = 'identity',
-) -> dict:
+) -> dict[str, bool]:
     """create or update an OIDC token role in the vault identity engine"""
-    return ctx.request_context.lifespan_context['identity'].create_or_update_role(
-        name=name,
-        key=key,
-        template=template,
-        client_id=client_id,
-        ttl=ttl,
-        mount_point=mount_point,
-    )
+    return {
+        'success': ctx.request_context.lifespan_context['identity']
+        .create_or_update_role(
+            name=name,
+            key=key,
+            template=template,
+            client_id=client_id,
+            ttl=ttl,
+            mount_point=mount_point,
+        )
+        .ok
+    }
 
 
 async def read_role(
