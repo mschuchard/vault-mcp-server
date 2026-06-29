@@ -72,17 +72,37 @@ These environment variables can all be defined and passed to the Vault MCP Serve
 
 Establishes the cache time for all read and list operations before new value(s) are retrieved instead of using the cached value.
 
+- **VAULT_AUTH_METHOD**: 'token'
+
+Selects the Vault authentication method from among `approle` (beta), `token`, and `userpass` (beta).
+
 - **VAULT_NAMESPACE**: ''
 
 Establishes the Vault namespace (enterprise only).
 
-- **VAULT_TOKEN**: ''
+- **VAULT_PASSWORD**: None
 
-Vault authentication token.
+Password for user with the `userpass` authentication method.
+
+- **VAULT_ROLE_ID**: None
+
+Role ID for entity with the `approle` authentication method.
+
+- **VAULT_SECRET_ID**: None
+
+Secret ID for entity with the `approle` authentication method.
+
+- **VAULT_TOKEN**: None
+
+Token for entity with the `token` authentication method.
 
 - **VAULT_URL**: http://127.0.0.1:8200
 
 Vault server URL.
+
+- **VAULT_USERNAME**: None
+
+Username for user with the `userpass` authentication method.
 
 ## Features
 
