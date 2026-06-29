@@ -22,13 +22,19 @@ def test_client() -> None:
     assert overridden_client.token == '1234567890123456789012345678'
 
 
-def test_client_errors() -> None:
+def test_client_errors(monkeypatch) -> None:
+    # unknown auth method
+    monkeypatch.setenv('VAULT_AUTH_METHOD', 'unknown')
+    with pytest.raises(ValueError, match='Unknown auth method'):
+        client.client()
+
     # bad token
-    os.environ['VAULT_TOKEN'] = 'abcd1234!'
+    monkeypatch.setenv('VAULT_AUTH_METHOD', 'token')
+    monkeypatch.setenv('VAULT_TOKEN', 'abcd1234!')
     with pytest.raises(ValueError, match='invalid token'):
         client.client()
 
     # bad url
-    os.environ['VAULT_URL'] = 'invalid_url'
+    monkeypatch.setenv('VAULT_URL', 'invalid_url')
     with pytest.raises(ValueError, match='invalid vault url'):
         client.client()

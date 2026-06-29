@@ -18,7 +18,7 @@ shutdown:
 	@killall vault || true
 
 # make ARGS='-k EXPRESSION' unit
-unit: shutdown bootstrap
+unit:
 	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run pytest $(ARGS)
 
 accept:
