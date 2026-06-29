@@ -10,7 +10,7 @@ The MCP Server container image is hosted at [Dockerhub](https://hub.docker.com/r
 
 These can hopefully be extrapolated and modified to fit other clients if you want to play with this server for whatever reason.
 
-**Claude**
+### Claude
 ```json
 {
   "mcpServers": {
@@ -21,26 +21,24 @@ These can hopefully be extrapolated and modified to fit other clients if you wan
         "-i",
         "--rm",
         "-e",
-        "VAULT_URL",
+        "ENV_VAR",
         "-e",
-        "VAULT_TOKEN",
-        "-e",
-        "CACHE_TTL",
+        "ENV_VAR_TWO",
         "matthewschuchard/vault-mcp-server"
       ],
       "env": {
-        "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
-        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>",
-        "CACHE_TTL": "<CACHE TTL FOR READ/LIST OPERATIONS>"
+        "ENV_VAR": "<ENV VAR VALUE>",
+        "ENV_VAR_TWO": "<ENV VAR TWO VALUE>",
       }
     }
   }
 }
 ```
 
-**VSCode**
+### VSCode
 
 The `MCP: Add Server --> Docker Image` command can also streamline this configuration. The values below can be entered into the input prompts, and then the `mcp.json` file is automically opened within a pane afterward for further updates if necessary.
+
 ```json
 {
   "servers": {
@@ -52,24 +50,39 @@ The `MCP: Add Server --> Docker Image` command can also streamline this configur
         "-i",
         "--rm",
         "-e",
-        "VAULT_URL",
+        "ENV_VAR",
         "-e",
-        "VAULT_TOKEN",
-        "-e",
-        "CACHE_TTL",
+        "ENV_VAR_TWO",
         "matthewschuchard/vault-mcp-server"
       ],
       "env": {
-        "VAULT_URL": "<VAULT SERVER CLUSTER URL>",
-        "VAULT_TOKEN": "<VAULT AUTHENTICATION TOKEN>",
-        "CACHE_TTL": "<CACHE TTL FOR READ/LIST OPERATIONS>"
+        "ENV_VAR": "<ENV VAR VALUE>",
+        "ENV_VAR_TWO": "<ENV VAR TWO VALUE>",
       }
     }
   }
 }
 ```
 
-Note that `CACHE_TTL` is an optional environment variable that establishes the cache time for all read and list operations before new value(s) are retrieved instead of using the cached value. The default value is sixty (60) seconds.
+### Environment Variables
+
+These environment variables can all be defined and passed to the Vault MCP Server utilizing the pattern shown above for `ENV_VAR`.
+
+- **CACHE_TTL**: 60
+
+Establishes the cache time for all read and list operations before new value(s) are retrieved instead of using the cached value.
+
+- **VAULT_NAMESPACE**: ''
+
+Establishes the Vault namespace (enterprise only).
+
+- **VAULT_TOKEN**: ''
+
+Vault authentication token.
+
+- **VAULT_URL**: http://127.0.0.1:8200
+
+Vault server URL.
 
 ## Features
 
