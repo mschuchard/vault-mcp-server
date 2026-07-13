@@ -50,7 +50,7 @@ def client() -> hvac.Client:
             raise ValueError(f'Unknown auth method: {other}')
 
     # validate client
-    if not client.is_authenticated:
+    if not client.is_authenticated():
         raise hvac.exceptions.Unauthorized('invalid authentication')
     if client.sys.is_sealed():
         raise hvac.exceptions.VaultNotInitialized('vault server is sealed')
