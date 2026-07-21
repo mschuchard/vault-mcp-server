@@ -37,6 +37,14 @@ def client() -> hvac.Client:
             )
             # use response token to authenticate
             client.token = resp['auth']['client_token']
+        case 'jwt':
+            # jwt method login
+            resp = client.auth.jwt.jwt_login(
+                role=os.environ['VAULT_ROLE'],
+                jwt=os.environ['VAULT_JWT'],
+            )
+            # use response token to authenticate
+            client.token = resp['auth']['client_token']
         case 'userpass':
             # userpass method login
             resp = client.auth.userpass.login(

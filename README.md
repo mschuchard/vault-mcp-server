@@ -74,7 +74,11 @@ Establishes the cache time for all read and list operations before new value(s) 
 
 - **VAULT_AUTH_METHOD**: 'token'
 
-Selects the Vault authentication method from among `approle` (beta), `token`, and `userpass` (beta).
+Selects the Vault authentication method from among `approle`, `jwt` (beta), `token`, and `userpass`.
+
+- **VAULT_JWT**: None
+
+JSON Web Token for entity with the `jwt` authentication method.
 
 - **VAULT_NAMESPACE**: ''
 
@@ -83,6 +87,10 @@ Establishes the Vault namespace (enterprise only).
 - **VAULT_PASSWORD**: None
 
 Password for user with the `userpass` authentication method.
+
+- **VAULT_ROLE**: None
+
+Role for entity with the `jwt` authentication method.
 
 - **VAULT_ROLE_ID**: None
 
