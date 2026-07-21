@@ -32,24 +32,19 @@ def client() -> hvac.Client:
         case 'approle':
             # push method approle login
             resp = client.auth.approle.login(
-                role_id=os.environ['VAULT_ROLE_ID'],
-                secret_id=os.environ['VAULT_SECRET_ID'],
+                role_id=os.environ['VAULT_ROLE_ID'], secret_id=os.environ['VAULT_SECRET_ID'], mount_point=os.environ.get('VAULT_AUTH_PATH', 'approle')
             )
             # use response token to authenticate
             client.token = resp['auth']['client_token']
         case 'jwt':
             # jwt method login
-            resp = client.auth.jwt.jwt_login(
-                role=os.environ['VAULT_ROLE'],
-                jwt=os.environ['VAULT_JWT'],
-            )
+            resp = client.auth.jwt.jwt_login(role=os.environ['VAULT_ROLE'], jwt=os.environ['VAULT_JWT'], path=os.environ.get('VAULT_AUTH_PATH'))
             # use response token to authenticate
             client.token = resp['auth']['client_token']
         case 'userpass':
             # userpass method login
             resp = client.auth.userpass.login(
-                username=os.environ['VAULT_USERNAME'],
-                password=os.environ['VAULT_PASSWORD'],
+                username=os.environ['VAULT_USERNAME'], password=os.environ['VAULT_PASSWORD'], mount_point=os.environ.get('VAULT_AUTH_PATH', 'userpass')
             )
             # use response token to authenticate
             client.token = resp['auth']['client_token']

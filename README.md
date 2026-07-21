@@ -76,6 +76,10 @@ Establishes the cache time for all read and list operations before new value(s) 
 
 Selects the Vault authentication method from among `approle`, `jwt` (beta), `token`, and `userpass`.
 
+- **VAULT_AUTH_PATH**: /<authentication engine type>
+
+Path at which the utilized Vault authentication method is mounted.
+
 - **VAULT_JWT**: None
 
 JSON Web Token for entity with the `jwt` authentication method.
