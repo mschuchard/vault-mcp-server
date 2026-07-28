@@ -1,5 +1,6 @@
 """vault acl policy"""
 
+import json
 from typing import Annotated, List
 from fastmcp import Context
 
@@ -35,14 +36,14 @@ async def list_(ctx: Context) -> list[str]:
     return policies if policies else []
 
 
-async def example_policy() -> dict[str, dict[str, dict[str, List[str]]]]:
+async def example_policy() -> str:
     """display an example vault acl policy"""
-    return {'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}}
+    return json.dumps({'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}})
 
 
 async def generate_policy(
     paths: Annotated[List[str], 'The list of Vault access paths to include in the generated policy.'],
-) -> dict[str, dict[str, dict[str, List[str]]]]:
+) -> str:
     """generate a vault acl policy example with input paths"""
     # initialize policy dictionary
     policy: dict[str, dict[str, dict[str, list[str]]]] = {'path': {}}
@@ -51,7 +52,7 @@ async def generate_policy(
     for path in paths:
         policy['path'][path] = {'capabilities': ['read', 'list']}
 
-    return policy
+    return json.dumps(policy)
 
 
 async def generate_smart_policy(
