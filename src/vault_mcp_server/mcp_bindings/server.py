@@ -6,6 +6,7 @@ from typing import Literal
 import os
 
 from fastmcp import FastMCP
+from fastmcp.server.transforms.search import BM25SearchTransform
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ReadResourceSettings
 import hvac
 
@@ -42,6 +43,7 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
         name='Vault',
         instructions='This server facilitates interfacing and interactions with a Vault server. It provides tools for interacting with the secrets engines, and the system backends for authentication and authorization.',
         lifespan=server_lifespan,
+        transforms=[BM25SearchTransform()],
     )
 
     # add response caching middleware

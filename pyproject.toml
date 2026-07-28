@@ -21,6 +21,9 @@ Issues = "https://github.com/mschuchard/vault-mcp-server/issues"
 [tool.ty.rules]
 unresolved-attribute = "ignore"
 
+[tool.ruff.lint]
+ignore = ["I001"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
