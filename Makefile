@@ -35,3 +35,11 @@ unit:
 
 accept:
 	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run fastmcp dev src/vault_mcp_server/dev.py
+
+full:
+	@echo 'make bootstrap'
+	@echo 'docker buildx build . -t matthewschuchard/vault-mcp-server'
+	@echo 'servers.vault.env.VAULT_TOKEN in mcp.json'
+	@echo 'extensions mcp servers vault start server'
+	@echo 'extensions mcp servers vault enable server'
+	@echo 'begin chat with agent llm'
