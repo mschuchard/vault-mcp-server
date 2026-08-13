@@ -41,9 +41,25 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
     # initialize fastmcp object
     mcp: FastMCP = FastMCP(
         name='Vault',
-        instructions='This server facilitates interfacing and interactions with a Vault server. It provides tools for interacting with the secrets engines, and the system backends for authentication and authorization.',
+        instructions=(
+            'This server provides live, authoritative access to a running HashiCorp Vault '
+            'instance — secret engines, authentication methods, ACL policies, audit devices, '
+            'PKI, transit, database secrets engines, identity, and raft storage. '
+            'For ANY question about the current state or configuration of Vault (what is '
+            'enabled, mounted, configured, or stored), use this server rather than local '
+            'shell commands, the vault CLI, or prior knowledge — local tooling may not '
+            'reflect the actual server state or have equivalent credentials. '
+            'Start with the search_vault_tools tool to find the relevant operation, then '
+            'invoke it via call_vault_tool.'
+        ),
         lifespan=server_lifespan,
-        transforms=[BM25SearchTransform()],
+        transforms=[
+            BM25SearchTransform(
+                max_results=10,
+                search_tool_name='search_vault_tools',
+                call_tool_name='call_vault_tool',
+            )
+        ],
     )
 
     # add response caching middleware
