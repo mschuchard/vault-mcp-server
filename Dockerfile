@@ -1,13 +1,15 @@
 # ref: https://github.com/modelcontextprotocol/servers/blob/main/src/git/Dockerfile
+ARG PY_VERSION=3.13
 # Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
+FROM ghcr.io/astral-sh/uv:python${PY_VERSION}-bookworm-slim AS uv
 
 # Install the project into `/app`
 WORKDIR /app
 
+# specify system python
+ENV UV_PYTHON=python
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
-
 # Copy from the cache instead of linking since it's a mounted volume
 ENV UV_LINK_MODE=copy
 
@@ -23,7 +25,7 @@ ADD . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --no-editable
 
-FROM python:3.12-slim-bookworm
+FROM python:${PY_VERSION}-slim-bookworm
 
 WORKDIR /app
 
