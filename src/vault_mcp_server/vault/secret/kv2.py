@@ -1,6 +1,6 @@
 """vault kv2"""
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastmcp import Context
 import hvac.exceptions
@@ -9,7 +9,7 @@ import hvac.exceptions
 def configure(
     ctx: Context,
     max_versions: Annotated[int, 'The number of versions to keep per key.'] = 10,
-    cas_required: Annotated[Optional[bool], 'If true, all keys will require the cas parameter to be set on all write requests.'] = None,
+    cas_required: Annotated[bool | None, 'If true, all keys will require the cas parameter to be set on all write requests.'] = None,
     delete_version_after: Annotated[str, 'Specifies the length of time before a version is deleted. Accepts Go duration format string.'] = '0s',
     mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
 ) -> dict[str, bool]:
@@ -41,15 +41,17 @@ def create_update(
     mount: Annotated[str, 'The "path" the key-value version 2 secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secrets to create/update.'] = '',
     secret: Annotated[
-        dict,
+        dict | None,
         'Specifies keys, paired with associated values, to be held at the given location. Multiple key/value pairs can be specified, and all will be returned on a read operation.',
-    ] = {},
+    ] = None,
     cas: Annotated[
-        Optional[int],
+        int | None,
         'Set the "cas" value to use a Check-And-Set operation. If not set the write will be allowed. If set to 0 a write will only be allowed if the key doesn\'t exist.',
     ] = None,
 ) -> dict:
     """create or update a key-value version 2 secret in vault"""
+    if secret is None:
+        secret = {}
     return ctx.request_context.lifespan_context['kv2'].create_or_update_secret(
         mount_point=mount,
         path=path,
@@ -63,11 +65,13 @@ def patch(
     mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secrets to patch.'] = '',
     secret: Annotated[
-        dict,
+        dict | None,
         'Specifies keys, paired with associated values, to be held at the given location. Multiple key/value pairs can be specified, and all will be returned on a read operation.',
-    ] = {},
+    ] = None,
 ) -> dict:
     """update the data of a key-value version 2 secret in vault without overwriting the current secret data"""
+    if secret is None:
+        secret = {}
     return ctx.request_context.lifespan_context['kv2'].patch(
         mount_point=mount,
         path=path,
@@ -79,7 +83,7 @@ async def read(
     ctx: Context,
     mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secret to read.'] = '',
-    version: Annotated[Optional[int], 'Specifies the version to return. If not set the latest version is returned.'] = None,
+    version: Annotated[int | None, 'Specifies the version to return. If not set the latest version is returned.'] = None,
     raise_on_deleted_version: Annotated[bool, 'If True, raise exception when the requested version has been deleted.'] = False,
 ) -> dict:
     """read a key-value version 2 secret from a vault"""
@@ -181,15 +185,15 @@ def update_metadata(
     ctx: Context,
     mount: Annotated[str, 'The "path" the secret engine was mounted on.'] = 'secret',
     path: Annotated[str, 'Specifies the path of the secret.'] = '',
-    max_versions: Annotated[Optional[int], 'The number of versions to keep per key. If not set, the backend configured max version is used.'] = None,
+    max_versions: Annotated[int | None, 'The number of versions to keep per key. If not set, the backend configured max version is used.'] = None,
     cas_required: Annotated[
-        Optional[bool], "If true, the key will require the cas parameter to be set on all write requests. If false, the backend's configuration will be used."
+        bool | None, "If true, the key will require the cas parameter to be set on all write requests. If false, the backend's configuration will be used."
     ] = None,
     delete_version_after: Annotated[
-        Optional[str],
+        str | None,
         'Set the delete_version_after value to a duration to specify when to delete a version after creation/update. Accepts Go duration format string.',
     ] = None,
-    custom_metadata: Annotated[Optional[dict], 'A map of arbitrary string to string valued user-provided metadata meant to describe the secret.'] = None,
+    custom_metadata: Annotated[dict | None, 'A map of arbitrary string to string valued user-provided metadata meant to describe the secret.'] = None,
 ) -> dict[str, bool]:
     """update metadata for the secret at the specified path"""
     return {

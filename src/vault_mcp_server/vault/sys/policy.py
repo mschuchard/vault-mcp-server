@@ -1,7 +1,9 @@
 """vault acl policy"""
 
 import json
-from typing import Annotated, List
+from typing import Annotated
+
+import hvac.exceptions
 from fastmcp import Context
 
 from vault_mcp_server.vault.sys import auth, secret
@@ -42,7 +44,7 @@ async def example_policy() -> str:
 
 
 async def generate_policy(
-    paths: Annotated[List[str], 'The list of Vault access paths to include in the generated policy.'],
+    paths: Annotated[list[str], 'The list of Vault access paths to include in the generated policy.'],
 ) -> str:
     """generate a vault acl policy example with input paths"""
     # initialize policy dictionary
@@ -100,8 +102,10 @@ async def generate_smart_policy(
                 case 'kv' if secret_engines[mount_path].get('options', {}).get('version') == '2':
                     paths = await kv2.list_(ctx, mount=clean_path)
                     engine_roles[clean_path] = {'type': 'kv2', 'top_level_paths': paths}
-        except Exception:
-            pass
+        except hvac.exceptions.InvalidPath:
+            engine_roles[clean_path] = {'type': engine_type, 'error': 'no roles/keys configured'}
+        except hvac.exceptions.Forbidden:
+            engine_roles[clean_path] = {'type': engine_type, 'error': 'permission denied introspecting this mount'}
 
     return f"""Generate a Vault ACL policy for: {description}
 
