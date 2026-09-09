@@ -34,7 +34,7 @@ unit:
 	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run pytest $(ARGS)
 
 accept:
-	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run fastmcp dev src/vault_mcp_server/dev.py
+	VAULT_ADDR=$(VAULT_ADDR) VAULT_TOKEN=$$(jq -r '.root_token' $(VAULT_INIT_JSON)) uv run fastmcp dev inspector src/vault_mcp_server/dev.py
 
 full:
 	@echo 'make bootstrap'

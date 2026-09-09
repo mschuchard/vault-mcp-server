@@ -10,7 +10,7 @@ from fastmcp.server.transforms.search import BM25SearchTransform
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ReadResourceSettings
 import hvac
 
-from vault_mcp_server.mcp_bindings import provider
+from vault_mcp_server.mcp_bindings import provider, errors
 from vault_mcp_server.vault import client
 
 
@@ -73,6 +73,7 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
             read_resource_settings=ReadResourceSettings(ttl=cache_ttl),
         )
     )
+    mcp.add_middleware(errors.VaultErrorMiddleware())
 
     # load integrations
     provider.provider(mcp)
