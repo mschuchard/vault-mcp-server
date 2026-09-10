@@ -15,8 +15,11 @@ class VaultErrorMiddleware(Middleware):
     async def on_call_tool(self, context: MiddlewareContext, call_next) -> ToolResult:
         try:
             return await call_next(context)
-        except hvac_exc.VaultError as exc:
-            match exc:
+        except Exception as exc:
+            cause: BaseException | None = exc.__cause__
+            if not isinstance(cause, hvac_exc.VaultError):
+                raise
+            match cause:
                 case hvac_exc.Forbidden():
                     code = 'permission_denied'
                 case hvac_exc.InvalidRequest():
@@ -28,13 +31,13 @@ class VaultErrorMiddleware(Middleware):
                 case _:
                     code = 'vault_error'
             return ToolResult(
-                content=[{'type': 'text', 'text': f'Vault error ({code}): {exc}'}],
+                content=[{'type': 'text', 'text': f'Vault error ({code}): {cause}'}],
                 is_error=True,
                 structured_content={
                     'error_code': code,
-                    'hvac_exception': type(exc).__name__,
-                    'status_code': getattr(exc, 'status_code', None),
-                    'errors': getattr(exc, 'errors', None),
-                    'message': str(exc),
+                    'hvac_exception': type(cause).__name__,
+                    'status_code': getattr(cause, 'status_code', None),
+                    'errors': getattr(cause, 'errors', None),
+                    'message': str(cause),
                 },
             )
