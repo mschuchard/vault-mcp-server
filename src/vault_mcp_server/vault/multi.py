@@ -1,11 +1,12 @@
 """vault multiple interfaces"""
 
 from fastmcp import Context
+from fastmcp.prompts import PromptResult
 
 from vault_mcp_server.vault.sys import audit, auth, policy, secret
 
 
-async def diagnose_vault_state(ctx: Context) -> str:
+async def diagnose_vault_state(ctx: Context) -> PromptResult:
     """Diagnose the current Vault cluster state and surface potential misconfigurations"""
 
     # gather resource information
@@ -23,7 +24,8 @@ async def diagnose_vault_state(ctx: Context) -> str:
     # extract mounted paths for cross-referencing
     mounted_paths: list[str] = list(secret_engines.keys())
 
-    return f"""Diagnose the following Vault cluster state and identify potential misconfigurations, security gaps, or missing components.
+    return PromptResult(
+        messages=f"""Diagnose the following Vault cluster state and identify potential misconfigurations, security gaps, or missing components.
 
 Current Vault state:
 - Enabled audit devices: {audit_devices}
@@ -41,4 +43,12 @@ Check for the following issues and report findings grouped by severity (critical
 5. AUTH: Flag auth methods with no associated policies configured
 6. ENGINES: Flag secret engines mounted but likely unused (no corresponding policy path coverage)
 
-Be specific — reference the actual names and paths from the state above rather than giving generic advice."""
+Be specific — reference the actual names and paths from the state above rather than giving generic advice.""",
+        meta={
+            'audit devices': audit_devices,
+            'authentication engines': auth_engines,
+            'secret engine mounts': secret_engines,
+            'acl policies': policies,
+            'acl policy contents': policy_contents,
+        },
+    )

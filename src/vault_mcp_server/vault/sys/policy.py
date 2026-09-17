@@ -5,6 +5,7 @@ from typing import Annotated
 
 import hvac.exceptions
 from fastmcp import Context
+from fastmcp.prompts import PromptResult
 
 from vault_mcp_server.vault.sys import auth, secret
 from vault_mcp_server.vault.secret import database, kv2, pki, transit
@@ -38,14 +39,16 @@ async def list_(ctx: Context) -> list[str]:
     return policies if policies else []
 
 
-async def example_policy() -> str:
+async def example_policy() -> PromptResult:
     """display an example vault acl policy"""
-    return json.dumps({'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}})
+    return PromptResult(
+        messages=json.dumps({'path': {'secret/data/my-app/*': {'capabilities': ['read', 'list']}, 'secret/metadata/my-app/*': {'capabilities': ['list']}}})
+    )
 
 
 async def generate_policy(
     paths: Annotated[list[str], 'The list of Vault access paths to include in the generated policy.'],
-) -> str:
+) -> PromptResult:
     """generate a vault acl policy example with input paths"""
     # initialize policy dictionary
     policy: dict[str, dict[str, dict[str, list[str]]]] = {'path': {}}
@@ -54,13 +57,13 @@ async def generate_policy(
     for path in paths:
         policy['path'][path] = {'capabilities': ['read', 'list']}
 
-    return json.dumps(policy)
+    return PromptResult(messages=json.dumps(policy))
 
 
 async def generate_smart_policy(
     ctx: Context,
     description: Annotated[str, 'Natural language description of what this policy should allow'],
-) -> str:
+) -> PromptResult:
     """Generate a context-aware Vault ACL policy prompt with current Vault state"""
     # validate description
     if not description.strip():
@@ -107,7 +110,8 @@ async def generate_smart_policy(
         except hvac.exceptions.Forbidden:
             engine_roles[clean_path] = {'type': engine_type, 'error': 'permission denied introspecting this mount'}
 
-    return f"""Generate a Vault ACL policy for: {description}
+    return PromptResult(
+        messages=f"""Generate a Vault ACL policy for: {description}
 
 Current Vault state:
 - Mounted secret engines: {secret_engines}
@@ -133,4 +137,12 @@ Example structure in addition to those enumerated above:
     "path": {{
         "secret/data/myapp/*": {{"capabilities": ["read", "list"]}}
     }}
-}}"""
+}}""",
+        meta={
+            'secret engine mounts': secret_engines,
+            'secret engine roles': engine_roles,
+            'acl policies': policies,
+            'authentication engines': auth_engines,
+            'acl policy contents': policy_contents,
+        },
+    )
