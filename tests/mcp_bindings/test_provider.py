@@ -13,6 +13,6 @@ async def test_provider() -> None:
         tools: list[Tool] = await client.list_tools()
         assert len(tools) == 138
         resources: list[Resource] = await client.list_resources()
-        assert len(resources) == 5
+        assert len(resources) == 7
         prompts: list[Prompt] = await client.list_prompts()
         assert len(prompts) == 4

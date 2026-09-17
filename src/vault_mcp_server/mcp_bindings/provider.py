@@ -6,7 +6,7 @@ from fastmcp.prompts import Prompt
 from mcp.types import Annotations
 
 from vault_mcp_server.vault.secret import database, identity, kv2, pki, transit
-from vault_mcp_server.vault.sys import audit, auth, policy, raft, secret
+from vault_mcp_server.vault.sys import audit, auth, health, policy, raft, seal, secret
 from vault_mcp_server.vault import multi
 
 
@@ -37,6 +37,17 @@ def resource_provider(mcp: FastMCP) -> None:
     )
     mcp.add_resource(
         Resource.from_function(
+            fn=health.read_status,
+            uri='sys://health',
+            name='health-status',
+            description='Read the health status of the Vault server (also known as: server health, cluster health, sys/health).',
+            mime_type='application/json',
+            tags={'health', 'status'},
+            annotations=Annotations(audience=['assistant']),
+        )
+    )
+    mcp.add_resource(
+        Resource.from_function(
             fn=policy.list_,
             uri='sys://policies',
             name='configured-acl-policies',
@@ -54,6 +65,17 @@ def resource_provider(mcp: FastMCP) -> None:
             description='Read the Raft integrated storage configuration and peer list (also known as: raft storage cluster, cluster nodes, storage backend config).',
             mime_type='application/json',
             tags={'raft', 'storage', 'cluster'},
+            annotations=Annotations(audience=['assistant']),
+        )
+    )
+    mcp.add_resource(
+        Resource.from_function(
+            fn=seal.read_status,
+            uri='sys://seal-status',
+            name='seal-status',
+            description='Read the seal status of the Vault server (also known as: seal state, sys/seal-status).',
+            mime_type='application/json',
+            tags={'seal', 'seal-status'},
             annotations=Annotations(audience=['assistant']),
         )
     )
