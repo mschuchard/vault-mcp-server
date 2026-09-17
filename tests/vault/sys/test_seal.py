@@ -12,5 +12,10 @@ async def test_seal() -> None:
         # read
         result = await client.read_resource(uri='sys://seal-status')
         data = json.loads(result[0].text)
-        assert data.get('initialized') is True
         assert data.get('sealed') is False
+
+        result = await client.call_tool(name='seal-status-read')
+        assert isinstance(result.data, dict)
+        assert result.data.get('sealed') is False
+        assert 'n' in result.data
+        assert 't' in result.data
