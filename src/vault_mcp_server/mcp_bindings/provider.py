@@ -271,6 +271,14 @@ def tool_provider(mcp: FastMCP) -> None:
         annotations=cu_annotations,
         tags={'database', 'db-role', 'static-credentials', 'credentials'},
     )
+    # health (also known as: server health, cluster health, sys/health)
+    mcp.tool(
+        name_or_fn=health.read_status,
+        name='health-status-read',
+        description='Read the health status of the Vault server (also known as: server health, cluster health, sys/health).',
+        annotations=rl_annotations,
+        tags={'health', 'status'},
+    )
     # identity - entity (also known as: identity engine, identity entities)
     mcp.tool(
         name_or_fn=identity.create_or_update_entity,
@@ -966,6 +974,14 @@ def tool_provider(mcp: FastMCP) -> None:
         description='Delete a named Raft auto-snapshot configuration (Vault Enterprise only; also known as: raft storage backup automation).',
         annotations=del_annotations,
         tags={'raft', 'storage', 'snapshot', 'backup'},
+    )
+    # seal (also known as: seal state, sys/seal-status)
+    mcp.tool(
+        name_or_fn=seal.read_status,
+        name='seal-status-read',
+        description='Read the seal status of the Vault server (also known as: seal state, sys/seal-status).',
+        annotations=rl_annotations,
+        tags={'seal', 'seal-status'},
     )
     # secret (also known as: secret engines, mounts, secrets engines, backends, sys/mounts)
     mcp.tool(

@@ -127,12 +127,14 @@ Username for user with the `userpass` authentication method.
 - Current Vault Health
 - Current Vault Seal Status
 
-### Tools (138)
+### Tools (140)
 - System Backend
   - ACL Policies
   - Audit Devices
   - Authentication Engines
+  - Health
   - Raft (Clustering and Storage Snapshots)
+  - Seal Status
   - Secrets Engines
 - Secrets Backend
   - Database (Beta)
