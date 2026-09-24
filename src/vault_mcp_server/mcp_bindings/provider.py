@@ -6,7 +6,7 @@ from fastmcp.prompts import Prompt
 from mcp.types import Annotations
 
 from vault_mcp_server.vault.secret import database, identity, kv2, pki, transit
-from vault_mcp_server.vault.sys import audit, auth, health, policy, raft, seal, secret
+from vault_mcp_server.vault.sys import audit, auth, health, namespace, policy, raft, seal, secret
 from vault_mcp_server.vault import multi
 
 
@@ -43,6 +43,17 @@ def resource_provider(mcp: FastMCP) -> None:
             description='Read the health status of the Vault server (also known as: server health, cluster health, sys/health).',
             mime_type='application/json',
             tags={'health', 'status'},
+            annotations=Annotations(audience=['assistant']),
+        )
+    )
+    mcp.add_resource(
+        Resource.from_function(
+            fn=namespace.list_,
+            uri='sys://namespaces',
+            name='namespaces',
+            description='List all Vault namespaces (Vault Enterprise only; also known as: sys/namespaces).',
+            mime_type='application/json',
+            tags={'namespace'},
             annotations=Annotations(audience=['assistant']),
         )
     )
@@ -670,6 +681,35 @@ def tool_provider(mcp: FastMCP) -> None:
         description='Update metadata (max versions, CAS, custom metadata) for a secret in the Vault key-value version 2 secrets engine (also known as: KV v2).',
         annotations=cu_annotations,
         tags={'key-value-v2', 'kv2', 'metadata'},
+    )
+    # namespace (Enterprise only; also known as: sys/namespaces)
+    mcp.tool(
+        name_or_fn=namespace.create,
+        name='namespace-create',
+        description='Create a Vault namespace at the given path (Vault Enterprise only).',
+        annotations=cu_annotations,
+        tags={'namespace'},
+    )
+    mcp.tool(
+        name_or_fn=namespace.list_,
+        name='namespace-list',
+        description='List all Vault namespaces (Vault Enterprise only).',
+        annotations=rl_annotations,
+        tags={'namespace'},
+    )
+    mcp.tool(
+        name_or_fn=namespace.delete,
+        name='namespace-delete',
+        description='Delete a Vault namespace. Fails if the namespace has existing child namespaces.',
+        annotations=del_annotations,
+        tags={'namespace'},
+    )
+    mcp.tool(
+        name_or_fn=namespace.switch,
+        name='namespace-switch',
+        description='Switch the Vault namespace used for subsequent requests on this session, without an API call to Vault.',
+        annotations=cu_annotations,
+        tags={'namespace'},
     )
     # pki (also known as: PKI secrets engine, certificate authority, CA, certificates)
     mcp.tool(

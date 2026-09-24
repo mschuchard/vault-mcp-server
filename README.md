@@ -133,6 +133,7 @@ Username for user with the `userpass` authentication method.
   - Audit Devices
   - Authentication Engines
   - Health
+  - Namespace (Enterprise only)
   - Raft (Clustering and Storage Snapshots)
   - Seal Status
   - Secrets Engines

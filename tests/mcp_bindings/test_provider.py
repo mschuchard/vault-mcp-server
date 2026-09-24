@@ -11,8 +11,8 @@ from vault_mcp_server import dev
 async def test_provider() -> None:
     async with dev.client as client:
         tools: list[Tool] = await client.list_tools()
-        assert len(tools) == 140
+        assert len(tools) == 144
         resources: list[Resource] = await client.list_resources()
-        assert len(resources) == 7
+        assert len(resources) == 8
         prompts: list[Prompt] = await client.list_prompts()
         assert len(prompts) == 4
