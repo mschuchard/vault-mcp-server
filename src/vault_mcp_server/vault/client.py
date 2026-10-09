@@ -31,23 +31,17 @@ def client() -> hvac.Client:
             client.token = token
         case 'approle':
             # push method approle login
-            resp = client.auth.approle.login(
+            client.auth.approle.login(
                 role_id=os.environ['VAULT_ROLE_ID'], secret_id=os.environ['VAULT_SECRET_ID'], mount_point=os.environ.get('VAULT_AUTH_PATH', 'approle')
             )
-            # use response token to authenticate
-            client.token = resp['auth']['client_token']
         case 'jwt':
             # jwt method login
-            resp = client.auth.jwt.jwt_login(role=os.environ['VAULT_ROLE'], jwt=os.environ['VAULT_JWT'], path=os.environ.get('VAULT_AUTH_PATH'))
-            # use response token to authenticate
-            client.token = resp['auth']['client_token']
+            client.auth.jwt.jwt_login(role=os.environ['VAULT_ROLE'], jwt=os.environ['VAULT_JWT'], path=os.environ.get('VAULT_AUTH_PATH'))
         case 'userpass':
             # userpass method login
-            resp = client.auth.userpass.login(
+            client.auth.userpass.login(
                 username=os.environ['VAULT_USERNAME'], password=os.environ['VAULT_PASSWORD'], mount_point=os.environ.get('VAULT_AUTH_PATH', 'userpass')
             )
-            # use response token to authenticate
-            client.token = resp['auth']['client_token']
         case other:
             # unknown auth method
             raise ValueError(f'Unknown auth method: {other}')

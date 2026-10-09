@@ -7,7 +7,7 @@ import os
 
 from fastmcp import FastMCP
 from fastmcp.server.transforms.search import BM25SearchTransform
-from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ReadResourceSettings
+from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ListResourcesSettings, ReadResourceSettings
 import hvac
 
 from vault_mcp_server.mcp_bindings import provider, errors
@@ -68,7 +68,7 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
         ResponseCachingMiddleware(
             # cache list operations
             list_tools_settings=ListToolsSettings(ttl=cache_ttl),
-            list_resources_settings=ListToolsSettings(ttl=cache_ttl),
+            list_resources_settings=ListResourcesSettings(ttl=cache_ttl),
             # cache resource reads
             read_resource_settings=ReadResourceSettings(ttl=cache_ttl),
             # disable resource writes and prompt caching
