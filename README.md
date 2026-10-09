@@ -118,16 +118,17 @@ Username for user with the `userpass` authentication method.
 
 ## Features
 
-### Resources (7)
+### Resources (8)
 - Current Enabled ACL Policies
 - Current Enabled Audit Devices
 - Current Enabled Authentication Engines
 - Current Enabled Secret Engines
+- Current Namespaces (Enterprise only)
 - Current Raft Cluster Configuration
 - Current Vault Health
 - Current Vault Seal Status
 
-### Tools (140)
+### Tools (144)
 - System Backend
   - ACL Policies
   - Audit Devices

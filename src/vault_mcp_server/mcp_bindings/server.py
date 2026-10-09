@@ -71,6 +71,9 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
             list_resources_settings=ListToolsSettings(ttl=cache_ttl),
             # cache resource reads
             read_resource_settings=ReadResourceSettings(ttl=cache_ttl),
+            # disable resource writes and prompt caching
+            get_prompt_settings={'enabled': False},
+            call_tool_settings={'enabled': False},
         )
     )
     mcp.add_middleware(errors.VaultErrorMiddleware())

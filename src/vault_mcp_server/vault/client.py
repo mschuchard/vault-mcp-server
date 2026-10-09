@@ -25,7 +25,7 @@ def client() -> hvac.Client:
             # assign token value
             token: str = os.environ['VAULT_TOKEN']
             # validate token value
-            if not re.match(r'^[a-zA-Z0-9.]+$', token):
+            if not re.match(r'^[A-Za-z0-9._-]+$', token):
                 raise ValueError('invalid token format')
             # authenticate client
             client.token = token
