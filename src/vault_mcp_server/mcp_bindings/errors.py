@@ -31,13 +31,16 @@ class VaultErrorMiddleware(Middleware):
                 case _:
                     code = 'vault_error'
             return ToolResult(
-                content=[{'type': 'text', 'text': f'Vault error ({code}): {cause}'}],
+                # a plain string becomes a single text content block; a list of dicts is serialized to json text instead
+                content=f'Vault error ({code}): {cause}',
                 is_error=True,
                 structured_content={
                     'error_code': code,
                     'hvac_exception': type(cause).__name__,
-                    'status_code': getattr(cause, 'status_code', None),
-                    'errors': getattr(cause, 'errors', None),
+                    # hvac exceptions carry no status code attribute, only the request method and url
+                    'method': cause.method,
+                    'url': cause.url,
+                    'errors': cause.errors,
                     'message': str(cause),
                 },
             )
