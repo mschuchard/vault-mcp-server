@@ -1,5 +1,7 @@
 """test vault raft mcp integrations"""
 
+import json
+
 import pytest
 
 from vault_mcp_server import dev
@@ -14,6 +16,12 @@ async def test_raft_read_config() -> None:
         assert 'config' in result.data
         assert 'servers' in result.data['config']
         assert 'index' in result.data['config']
+
+        # resource returns the same data envelope as the tool
+        result = await client.read_resource(uri='raft://config')
+        data = json.loads(result[0].text)
+        assert 'servers' in data['config']
+        assert 'index' in data['config']
 
 
 @pytest.mark.asyncio

@@ -1,5 +1,7 @@
 """test vault authentication engine mcp integrations"""
 
+import json
+
 import pytest
 
 from vault_mcp_server import dev
@@ -17,6 +19,12 @@ async def test_auth() -> None:
         result = await client.call_tool(name='authentication-engines-list')
         assert 'kubernetes/' in result.data
         assert 'token/' in result.data
+
+        # list resource
+        result = await client.read_resource(uri='auth://engines')
+        data = json.loads(result[0].text)
+        assert 'kubernetes/' in data
+        assert 'token/' in data
 
         # read
         result = await client.call_tool(name='authentication-engine-read', arguments={'path': 'kubernetes'})

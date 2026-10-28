@@ -1,5 +1,7 @@
 """test vault audit device mcp integrations"""
 
+import json
+
 import pytest
 
 from vault_mcp_server import dev
@@ -16,6 +18,12 @@ async def test_audit() -> None:
         # list
         result = await client.call_tool(name='audit-devices-list')
         assert result.data == {'tmpfile/': {'description': '', 'path': 'tmpfile/', 'type': 'file', 'options': {'path': '/tmp/vault.audit.log'}, 'local': False}}
+
+        # list resource
+        result = await client.read_resource(uri='audit://devices')
+        assert json.loads(result[0].text) == {
+            'tmpfile/': {'description': '', 'path': 'tmpfile/', 'type': 'file', 'options': {'path': '/tmp/vault.audit.log'}, 'local': False}
+        }
 
         # disable
         result = await client.call_tool(name='audit-device-disable', arguments={'path': 'tmpfile'})

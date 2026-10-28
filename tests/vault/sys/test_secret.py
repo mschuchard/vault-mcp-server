@@ -2,6 +2,7 @@
 
 import pytest
 import asyncio
+import json
 
 from vault_mcp_server import dev
 
@@ -17,6 +18,12 @@ async def test_secret() -> None:
         # list
         result = await client.call_tool(name='secret-engines-list')
         assert len(result.data) > 0
+
+        # list resource
+        result = await client.read_resource(uri='secret://engines')
+        data = json.loads(result[0].text)
+        assert 'kubernetes/' in data
+        assert 'sys/' in data
 
         # read configuration
         result = await client.call_tool(name='secret-engine-read-configuration', arguments={'mount': 'kubernetes'})

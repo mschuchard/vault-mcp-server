@@ -1,5 +1,7 @@
 """test vault policy mcp integrations"""
 
+import json
+
 import pytest
 
 from vault_mcp_server import dev
@@ -16,6 +18,10 @@ async def test_policy() -> None:
         # list
         result = await client.call_tool(name='policies-list')
         assert result.data == ['default', 'mypolicy', 'root']
+
+        # list resource
+        result = await client.read_resource(uri='sys://policies')
+        assert json.loads(result[0].text) == ['default', 'mypolicy', 'root']
 
         # read
         result = await client.call_tool(name='policy-read', arguments={'name': 'mypolicy'})
