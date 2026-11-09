@@ -19,9 +19,10 @@ async def read_status(
     Returns fields such as initialized, sealed, standby, performance_standby,
     replication_performance_mode, replication_dr_mode, server_time_utc, version,
     cluster_name, and cluster_id. The *_code parameters control which HTTP status
-    is treated as a non-error response for each server state, rather than raising.
+    code vault returns for each server state; the health fields are returned for
+    every status code, including the non-200 defaults for standby and sealed nodes.
     """
-    return ctx.request_context.lifespan_context['sys'].read_health_status(
+    result = ctx.request_context.lifespan_context['sys'].read_health_status(
         method='GET',
         standby_ok=standby_ok,
         active_code=active_code,
@@ -31,3 +32,9 @@ async def read_status(
         sealed_code=sealed_code,
         uninit_code=uninit_code,
     )
+
+    # read_health_status passes raise_exception=False and the JSONAdapter only returns a dict for http 200
+    # every other status code (e.g. 429 standby, 503 sealed) is returned as a raw requests.Response with the json health body
+    if isinstance(result, dict):
+        return result
+    return result.json()
