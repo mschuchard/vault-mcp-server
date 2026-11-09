@@ -1,21 +1,21 @@
 """mcp server support"""
 
 from contextlib import asynccontextmanager
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from typing import Literal
 import os
 
 from fastmcp import FastMCP
 from fastmcp.server.transforms.search import BM25SearchTransform
-from fastmcp.server.middleware.caching import ResponseCachingMiddleware, ListToolsSettings, ListResourcesSettings, ReadResourceSettings
+from fastmcp.server.middleware.caching import ListToolsSettings, ListResourcesSettings, ReadResourceSettings
 import hvac
 
-from vault_mcp_server.mcp_bindings import provider, errors
+from vault_mcp_server.mcp_bindings import provider, errors, cache
 from vault_mcp_server.vault import client
 
 
 @asynccontextmanager
-async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
+async def server_lifespan(server: FastMCP) -> AsyncGenerator[dict]:
     """manage mcp server lifecycle with type-safe context"""
     # construct vault client
     vault_client: hvac.Client = client.client()
@@ -65,7 +65,7 @@ def run(transport: Literal['stdio', 'streamable-http', 'sse']) -> None:
     # add response caching middleware
     cache_ttl: int = int(os.getenv('CACHE_TTL', '60'))
     mcp.add_middleware(
-        ResponseCachingMiddleware(
+        cache.VaultResponseCachingMiddleware(
             # cache list operations
             list_tools_settings=ListToolsSettings(ttl=cache_ttl),
             list_resources_settings=ListResourcesSettings(ttl=cache_ttl),

@@ -1,4 +1,4 @@
-*cache*
+*py*cache*
 .venv
 nohup.out
 uv.lock
