@@ -1,6 +1,9 @@
 """vault raft"""
 
-import base64
+import datetime
+import os
+import pathlib
+import tempfile
 from typing import Annotated
 
 from fastmcp import Context
@@ -41,27 +44,70 @@ def remove_node(
     return {'success': ctx.request_context.lifespan_context['sys'].remove_raft_node(server_id=server_id).ok}
 
 
-def take_snapshot(ctx: Context) -> dict[str, str]:
-    """take a snapshot of the Raft integrated storage state and return it as a base64-encoded string"""
-    # take_raft_snapshot uses a RawAdapter and returns a streaming requests.Response of raw binary data
-    response = ctx.request_context.lifespan_context['sys'].take_raft_snapshot()
-    return {'snapshot': base64.b64encode(response.content).decode()}
+def _snapshot_dir() -> pathlib.Path:
+    """resolve and create the server-side directory that raft snapshots are written to and read from"""
+    # snapshots contain every secret in the cluster, so the directory is owner-only and is the only location these tools can access
+    directory: pathlib.Path = pathlib.Path(os.getenv('RAFT_SNAPSHOT_DIR', os.path.join(tempfile.gettempdir(), 'vault-mcp-server-snapshots'))).resolve()
+    directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+    return directory
+
+
+def _snapshot_path(filename: str) -> pathlib.Path:
+    """resolve a bare snapshot file name inside the snapshot directory, rejecting anything that could escape it"""
+    if filename in ('', '.', '..') or filename != os.path.basename(filename):
+        raise ValueError('filename must be a bare file name without directory components')
+    return _snapshot_dir() / filename
+
+
+def take_snapshot(
+    ctx: Context,
+    filename: Annotated[
+        str | None,
+        'Name of the file to write inside the server snapshot directory. Defaults to a timestamped name. An existing file is never overwritten.',
+    ] = None,
+) -> dict[str, str | int]:
+    """take a snapshot of the Raft integrated storage state, write it to a file on the server, and return the file name, path, and size in bytes"""
+    if filename is None:
+        filename = datetime.datetime.now(datetime.UTC).strftime('vault-raft-%Y%m%dT%H%M%SZ.snap')
+    snapshot_path: pathlib.Path = _snapshot_path(filename)
+    # exclusive create with owner-only permissions fails on an existing file before vault is contacted, and never overwrites it
+    descriptor: int = os.open(snapshot_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, 'wb') as snapshot_file:
+            # take_raft_snapshot uses a RawAdapter and returns a streaming requests.Response of raw binary data
+            response = ctx.request_context.lifespan_context['sys'].take_raft_snapshot()
+            try:
+                # write chunk by chunk so the full snapshot is never buffered in memory
+                for chunk in response.iter_content(chunk_size=1024 * 1024):
+                    snapshot_file.write(chunk)
+            finally:
+                response.close()
+    except BaseException:
+        # remove the incomplete file so a later restore cannot pick up a truncated snapshot
+        snapshot_path.unlink(missing_ok=True)
+        raise
+    return {'filename': snapshot_path.name, 'path': str(snapshot_path), 'size': snapshot_path.stat().st_size}
 
 
 def restore_snapshot(
     ctx: Context,
-    snapshot: Annotated[str, 'Base64-encoded snapshot data previously obtained from the raft-snapshot-take tool.'],
+    filename: Annotated[str, 'Name of a snapshot file inside the server snapshot directory, as returned by the raft-snapshot-take tool.'],
     force: Annotated[
         bool,
         'If true, bypass safety checks and force-restore even when the snapshot was taken from a different cluster (use with caution).',
     ] = False,
 ) -> dict[str, bool]:
-    """restore the Raft integrated storage state from a previously taken snapshot"""
-    raw: bytes = base64.b64decode(snapshot)
-    if force:
-        result = ctx.request_context.lifespan_context['sys'].force_restore_raft_snapshot(snapshot=raw)
-    else:
-        result = ctx.request_context.lifespan_context['sys'].restore_raft_snapshot(snapshot=raw)
+    """restore the Raft integrated storage state from a snapshot file previously written by the raft-snapshot-take tool"""
+    snapshot_path: pathlib.Path = _snapshot_path(filename)
+    # reject a symlink that points outside the snapshot directory
+    if snapshot_path.resolve().parent != snapshot_path.parent:
+        raise ValueError('filename must refer to a file inside the snapshot directory')
+    # an open file object is streamed by requests as the request body instead of being read into memory
+    with snapshot_path.open('rb') as snapshot_file:
+        if force:
+            result = ctx.request_context.lifespan_context['sys'].force_restore_raft_snapshot(snapshot=snapshot_file)
+        else:
+            result = ctx.request_context.lifespan_context['sys'].restore_raft_snapshot(snapshot=snapshot_file)
     return {'success': result.ok}
 
 

@@ -1,6 +1,8 @@
 """vault secret engine"""
 
 from typing import Annotated
+
+import hvac.exceptions
 from fastmcp import Context
 
 
@@ -20,20 +22,20 @@ def enable(
         '(Vault enterprise only) Specifies if the secrets engine is local only. Local secrets engines are not replicated nor (if a secondary) removed by replication.',
     ] = False,
     seal_wrap: Annotated[bool, '(Vault enterprise only) Enable seal wrapping for the mount.'] = False,
-) -> dict[str, bool | None]:
+) -> dict[str, bool | str | None]:
     """enable a vault secret engine"""
     result = ctx.request_context.lifespan_context['sys'].enable_secrets_engine(
         backend_type=engine, path=mount, description=description, config=config, plugin_name=plugin_name, options=options, local=local, seal_wrap=seal_wrap
     )
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
 
 
 def disable(
     ctx: Context, mount: Annotated[str, 'The path where the secrets engine is mounted. This is specified as part of the URL.']
-) -> dict[str, bool | None]:
+) -> dict[str, bool | str | None]:
     """disable a vault secret engine"""
     result = ctx.request_context.lifespan_context['sys'].disable_secrets_engine(path=mount)
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
 
 
 async def list_(ctx: Context) -> dict:
@@ -46,18 +48,15 @@ def move(
     ctx: Context,
     from_path: Annotated[str, 'Specifies the previous mount point of the secrets engine.'],
     to_path: Annotated[str, 'Specifies the new destination mount point for the secrets engine.'],
-) -> dict[str, bool | None]:
+) -> dict[str, bool | str | None]:
     """move an already-mounted secrets engine to a new mount point"""
     result = ctx.request_context.lifespan_context['sys'].move_backend(from_path=from_path, to_path=to_path)
     # move_backend returns a requests.Response object that produces 204 (empty body)
-    # check if it is a response object with ok attribute, or handle as successful if status code is 204
+    # check if it is a response object with ok attribute, or handle as successful if hvac returned a parsed json body instead
     if hasattr(result, 'ok'):
-        return {'success': result.ok, 'error': result.error if not result.ok else None}
-    elif hasattr(result, 'status_code'):
-        success = result.status_code == 204
-        return {'success': success, 'error': result.error if not result.ok else None}
+        return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
     else:
-        # if it is neither, assume success (for compatibility)
+        # if it is not a response object, hvac parsed a 200 json body into a dict; assume success (hvac raises on failure statuses)
         return {'success': True, 'error': None}
 
 
@@ -90,7 +89,7 @@ def tune_configuration(
     passthrough_request_headers: Annotated[list | None, 'List of headers to whitelist and pass from the request to the backend.'] = None,
     options: Annotated[dict | None, 'Specifies mount type specific options. For KV: version (str: "2" for KV v2).'] = None,
     force_no_cache: Annotated[bool | None, 'Disable caching for this mount.'] = None,
-) -> dict[str, bool | None]:
+) -> dict[str, bool | str | None]:
     """tune configuration parameters for a mounted secrets engine"""
     result = ctx.request_context.lifespan_context['sys'].tune_mount_configuration(
         path=mount,
@@ -106,20 +105,26 @@ def tune_configuration(
     )
     # tune_mount_configuration returns a requests.Response object that produces 204 (empty body)
     if hasattr(result, 'ok'):
-        return {'success': result.ok, 'error': result.error if not result.ok else None}
-    elif hasattr(result, 'status_code'):
-        success = result.status_code == 204
-        return {'success': success, 'error': result.error if not result.ok else None}
+        return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
     else:
-        # if it is neither, assume success (for compatibility)
+        # if it is not a response object, hvac parsed a 200 json body into a dict; assume success (hvac raises on failure statuses)
         return {'success': True, 'error': None}
 
 
 def retrieve_option(
     ctx: Context,
-    mount: Annotated[str, 'The mount point of the secrets engine (without trailing slash).'],
+    mount: Annotated[str, 'The mount point of the secrets engine (with or without a trailing slash).'],
     option_name: Annotated[str, "The name of the option to retrieve from the mount's options."],
     default_value: Annotated[str | None, 'Default value to return if the option is not found.'] = None,
 ) -> str | None:
     """retrieve a specific option value from a mounted secrets engine's configuration"""
-    return ctx.request_context.lifespan_context['sys'].retrieve_mount_option(mount_point=mount, option_name=option_name, default_value=default_value)
+    # hvac retrieve_mount_option indexes the mount listing directly and raises a bare KeyError for an unknown mount, so perform the lookup here
+    mounts: dict = ctx.request_context.lifespan_context['sys'].list_mounted_secrets_engines()['data']
+    # vault keys the listing by mount path with a trailing slash, so normalize the caller input whether or not it includes one
+    mount_key: str = f'{mount.strip("/")}/'
+    if mount_key not in mounts:
+        raise hvac.exceptions.InvalidPath(f'no secrets engine is mounted at "{mount_key}"', method='GET', url='/v1/sys/mounts')
+    mount_options: dict | None = mounts[mount_key].get('options')
+    if mount_options is None:
+        return default_value
+    return mount_options.get(option_name, default_value)

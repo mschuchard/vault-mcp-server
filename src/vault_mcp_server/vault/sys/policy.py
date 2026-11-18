@@ -16,16 +16,16 @@ def create_update(
     name: Annotated[str, 'Specifies the name of the policy to create.'],
     policy: Annotated[str | dict[str, dict[str, dict[str, list[str]]]], 'Specifies the policy document. Can be a string (HCL) or dict (JSON).'],
     pretty_print: Annotated[bool, 'If True and policy is a dict, send JSON with pretty formatting.'] = True,
-) -> dict[str, bool | None]:
+) -> dict[str, bool | str | None]:
     """create or update a vault acl policy"""
     result = ctx.request_context.lifespan_context['sys'].create_or_update_acl_policy(name=name, policy=policy, pretty_print=pretty_print)
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
 
 
-def delete(ctx: Context, name: Annotated[str, 'Specifies the name of the policy to delete.']) -> dict[str, bool | None]:
+def delete(ctx: Context, name: Annotated[str, 'Specifies the name of the policy to delete.']) -> dict[str, bool | str | None]:
     """delete a vault acl policy"""
     result = ctx.request_context.lifespan_context['sys'].delete_acl_policy(name=name)
-    return {'success': result.ok, 'error': result.error if not result.ok else None}
+    return {'success': result.ok, 'error': str(result.text) if not result.ok else None}
 
 
 async def read(ctx: Context, name: Annotated[str, 'The name of the acl policy to retrieve.']) -> dict[str, str | dict]:

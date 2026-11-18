@@ -1,8 +1,10 @@
 """test vault raft mcp integrations"""
 
 import json
+import pathlib
 
 import pytest
+from fastmcp import exceptions
 
 from vault_mcp_server import dev
 
@@ -53,12 +55,27 @@ async def test_raft_snapshot_roundtrip() -> None:
     async with dev.client as client:
         result = await client.call_tool(name='raft-snapshot-take')
         assert result.is_error is False
-        assert isinstance(result.data.get('snapshot'), str)
-        assert len(result.data['snapshot']) > 0
+        assert result.data['size'] > 0
+        snapshot_path = pathlib.Path(result.data['path'])
+        assert snapshot_path.stat().st_size == result.data['size']
+        # snapshot contains every secret in the cluster, so it must not be readable by other users
+        assert snapshot_path.stat().st_mode & 0o077 == 0
 
-        snapshot_b64 = result.data['snapshot']
-        result = await client.call_tool(name='raft-snapshot-restore', arguments={'snapshot': snapshot_b64})
-        assert result.data.get('success') is True
+        try:
+            result = await client.call_tool(name='raft-snapshot-restore', arguments={'filename': result.data['filename']})
+            assert result.data.get('success') is True
+        finally:
+            snapshot_path.unlink(missing_ok=True)
+
+
+@pytest.mark.asyncio
+async def test_raft_snapshot_filename_validation() -> None:
+    async with dev.client as client:
+        for bad_filename in ('../escape.snap', '/etc/passwd', 'nested/dir.snap', '..'):
+            with pytest.raises(exceptions.ToolError, match='bare file name'):
+                await client.call_tool(name='raft-snapshot-restore', arguments={'filename': bad_filename})
+            with pytest.raises(exceptions.ToolError, match='bare file name'):
+                await client.call_tool(name='raft-snapshot-take', arguments={'filename': bad_filename})
 
 
 @pytest.mark.asyncio

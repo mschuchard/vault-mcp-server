@@ -969,15 +969,15 @@ def tool_provider(mcp: FastMCP) -> None:
     mcp.tool(
         name_or_fn=raft.take_snapshot,
         name='raft-snapshot-take',
-        description='Take a base64-encoded snapshot of the Raft integrated storage state (also known as: raft storage backup).',
-        annotations=rl_annotations,
+        description='Take a snapshot of the Raft integrated storage state, write it to a file in the server snapshot directory, and return the file name, path, and size (also known as: raft storage backup).',
+        annotations={'readOnlyHint': False, 'destructiveHint': False} | global_annotations,
         tags={'raft', 'storage', 'snapshot', 'backup'},
     )
     mcp.tool(
         name_or_fn=raft.restore_snapshot,
         name='raft-snapshot-restore',
-        description='Restore Raft integrated storage state from a previously taken snapshot (also known as: raft storage restore).',
-        annotations=cu_annotations,
+        description='Restore Raft integrated storage state from a snapshot file in the server snapshot directory, as written by raft-snapshot-take (also known as: raft storage restore).',
+        annotations=del_annotations,
         tags={'raft', 'storage', 'snapshot', 'backup'},
     )
     mcp.tool(

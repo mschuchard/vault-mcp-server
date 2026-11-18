@@ -72,6 +72,10 @@ These environment variables can all be defined and passed to the Vault MCP Serve
 
 Establishes the cache time for all read and list operations before new value(s) are retrieved instead of using the cached value.
 
+- **RAFT_SNAPSHOT_DIR**: <system temp directory>/vault-mcp-server-snapshots
+
+Directory on the server where the `raft-snapshot-take` tool writes snapshot files and the only directory from which `raft-snapshot-restore` reads them. The directory is created with owner-only permissions.
+
 - **VAULT_AUTH_METHOD**: 'token'
 
 Selects the Vault authentication method from among `approle`, `jwt` (beta), `token`, and `userpass`.
